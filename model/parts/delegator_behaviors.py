@@ -73,12 +73,17 @@ def process_delegation_event(delegation, delegators, initial_holdings, delegatio
     delegator.delegated_tokens += delegation_tokens_quantity * (1 - delegation_tax_rate)
     pool_delegated_stake += delegation_tokens_quantity * (1 - delegation_tax_rate)
     # 5 * (0.995) / 10 * 10 = 4.975
-    print(f'{pool_delegated_stake=}, {shares=}')
+    # print(f'{pool_delegated_stake=}, {shares=}')
     new_shares = ((delegation_tokens_quantity * (1 - delegation_tax_rate)) / pool_delegated_stake) * shares
     delegator.shares += new_shares
     # store shares locally only--it has to be recomputed each action block because we don't save it until bookkeeping
     shares += new_shares 
-    print(f'ACTION: DELEGATE--{delegator_id=}, {delegator.holdings=}, {delegator.delegated_tokens=}, {delegator.undelegated_tokens=}, {delegator.shares=}')
+    print(f"""ACTION: DELEGATE--
+                {delegator_id=}, 
+                {delegator.holdings=}, 
+                {delegator.delegated_tokens=}, 
+                {delegator.undelegated_tokens=}, 
+                {delegator.shares=}""")
     return pool_delegated_stake, shares
 
 def account_for_tax(params, step, sL, s, inputs):
@@ -88,7 +93,7 @@ def account_for_tax(params, step, sL, s, inputs):
         delegation_tokens_quantity = 0
     else:
         delegation_tokens_quantity = sum(event['tokens'] for event in inputs['delegation_events'])
-    print(f'{delegation_tokens_quantity=}')
+    # print(f'{delegation_tokens_quantity=}')
     delegation_tax_rate = params['delegation_tax_rate']
     
     tax = delegation_tax_rate * delegation_tokens_quantity
@@ -137,7 +142,12 @@ def undelegate(params, step, sL, s, inputs):
         delegator.shares -= undelegation_shares_quantity
         pool_delegated_stake -= undelegation_shares_quantity
         shares -= undelegation_shares_quantity
-        print(f'ACTION: UNDELEGATE--{delegator_id=}, {delegator.holdings=}, {delegator.delegated_tokens=}, {delegator.undelegated_tokens=}, {delegator.shares=}')
+        print(f'''ACTION: UNDELEGATE--
+                    {delegator_id=}, 
+                    {delegator.holdings=}, 
+                    {delegator.delegated_tokens=}, 
+                    {delegator.undelegated_tokens=}, 
+                    {delegator.shares=}''')
     key = 'delegators'
     value = s['delegators']
     return key, value
@@ -162,7 +172,12 @@ def withdraw(params, step, sL, s, inputs):
         else:
             pass
 
-        print(f'ACTION: WITHDRAW--{delegator_id=}, {delegator.holdings=}, {delegator.delegated_tokens=}, {delegator.undelegated_tokens=}, {delegator.shares=}')
+        print(f'''ACTION: WITHDRAW--
+                    {delegator_id=}, 
+                    {delegator.holdings=}, 
+                    {delegator.delegated_tokens=}, 
+                    {delegator.undelegated_tokens=}, 
+                    {delegator.shares=}''')
     key = 'delegators'
     value = s['delegators']
     return key, value

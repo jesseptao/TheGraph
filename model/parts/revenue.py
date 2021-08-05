@@ -35,22 +35,22 @@ def distribute_revenue_to_delegators(params, step, sL, s, inputs):
     indexing_revenue = inputs['indexing_fee_amt']
     query_revenue = inputs['query_fee_amt']   
 
-    query_fee_cut = params['query_fee_cut']
-    indexing_revenue_cut = params['indexer_revenue_cut']
-    # step 1: collect revenue from the state
     
-    # 5.2 D+ = D + Ri * (1 - phi)
-    pool_delegated_stake = sum([d.delegated_tokens for d in s['delegators'].values()])
+    # step 1: collect revenue from the state
+    if indexing_revenue != 0 or query_revenue != 0:
+        query_fee_cut = params['query_fee_cut']
+        indexing_revenue_cut = params['indexer_revenue_cut']
 
-    for id, delegator in s['delegators'].items():
-        print(f'{id=}, {s["timestep"]=}, {delegator.shares=}')
-        if id == 'indexer':
-            # step 2: distribute indexer share IN ADDITION to indexer's delegator share.
-            # NOTE: skip pool reward, handle that in distribute_revenue_to_pool
-            revenue_to_indexer = calculate_revenue_to_indexer(indexing_revenue, query_revenue, query_fee_cut, indexing_revenue_cut)
-            delegator.holdings += revenue_to_indexer
+        print(f'ACTION: DISTRIBUTE REVENUE TO DELEGATORS')
+        for id, delegator in s['delegators'].items():
+            print(f'''  {id=}, {s["timestep"]=}, {delegator.shares=}''')
+            if id == 'indexer':
+                # step 2: distribute indexer share IN ADDITION to indexer's delegator share.
+                # NOTE: skip pool reward, handle that in distribute_revenue_to_pool
+                revenue_to_indexer = calculate_revenue_to_indexer(indexing_revenue, query_revenue, query_fee_cut, indexing_revenue_cut)
+                delegator.holdings += revenue_to_indexer
 
-        ## NOTE: Non-indexer delegators get nothing.  Their rewards are added back to the pool and no new shares are issues.
+            ## NOTE: Non-indexer delegators get nothing.  Their rewards are added back to the pool and no new shares are issues.
         
     key = 'delegators'
     value = s['delegators']
@@ -58,16 +58,22 @@ def distribute_revenue_to_delegators(params, step, sL, s, inputs):
 
 def distribute_revenue_to_pool(params, step, sL, s, inputs):
     """ Calculate and distribute query and indexing rewards to indexer pool """
-    pool_delegated_stake = s['pool_delegated_stake']
 
     indexing_revenue = inputs['indexing_fee_amt']
     query_revenue = inputs['query_fee_amt']
+    pool_delegated_stake = s['pool_delegated_stake']
+    
+    if indexing_revenue != 0 or query_revenue != 0:
+        print(f'ACTION: DISTRIBUTE REVENUE TO POOL')
 
-    query_fee_cut = params['query_fee_cut']
-    indexing_revenue_cut = params['indexer_revenue_cut']
-    non_indexer_revenue_net = calculate_revenue_to_indexer(indexing_revenue, query_revenue, query_fee_cut, indexing_revenue_cut)
-    pool_delegated_stake += non_indexer_revenue_net
-    print(f'{pool_delegated_stake=}')
+        
+        query_fee_cut = params['query_fee_cut']
+        indexing_revenue_cut = params['indexer_revenue_cut']
+
+        # 5.2 D+ = D + Ri * (1 - phi)
+        non_indexer_revenue_net = calculate_revenue_to_indexer(indexing_revenue, query_revenue, query_fee_cut, indexing_revenue_cut)
+        pool_delegated_stake += non_indexer_revenue_net
+        print(f'  {pool_delegated_stake=}')
     key = 'pool_delegated_stake'
     return key, pool_delegated_stake
 
