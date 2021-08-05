@@ -4,7 +4,9 @@
 # from .parts.add_delegator import instantiate_delegate, should_instantiate_delegate
 
 from .parts.delegator_behaviors import (delegate, undelegate, withdraw,
-                                        may_act_this_timestep, delegator_action,
+                                        delegate_actions,
+                                        undelegate_actions,
+                                        withdraw_actions,
                                         account_for_tax)
 
 from .parts.revenue import (revenue_amt, distribute_revenue_to_delegators, 
@@ -31,7 +33,7 @@ psubs = [
     {
         'label': 'Delegate',
         'policies': {
-            'delegator_action': delegator_action
+            'delegate_actions': delegate_actions
         },
         'variables': {
             'delegators': delegate,
@@ -41,7 +43,7 @@ psubs = [
     {
         'label': 'Undelegate',
         'policies': {
-            'delegator_action': delegator_action
+            'undelegate_actions': undelegate_actions
         },
         'variables': {
             'delegators': undelegate,
@@ -50,7 +52,7 @@ psubs = [
     {
         'label': 'Withdraw',
         'policies': {
-            'delegator_action': delegator_action
+            'withdraw_actions': withdraw_actions
         },
         'variables': {
             'delegators': withdraw,
@@ -63,7 +65,6 @@ psubs = [
         'variables': {
             'pool_delegated_stake': store_pool_delegated_stake,
             'shares': store_shares,
-            'epoch': increment_epoch,
         },
     },
 ]

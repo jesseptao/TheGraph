@@ -7,7 +7,7 @@ def convertFromLongStrToDecimal(d, field, GRT_conversion_rate):
             # sometimes it comes in as a number, sometimes as a string
             event[field] = str(event[field])
 
-            # put in a decimal place 18 chars from the right then convert to double to avoid overflow error.
+            # put in a decimal place 18 chars from the right then convert to Decimal to avoid overflow error.
             try:
                 event[field] = Decimal(event[field][:len(event[field]) - -GRT_conversion_rate] + "." + event[field][GRT_conversion_rate:])
             except:

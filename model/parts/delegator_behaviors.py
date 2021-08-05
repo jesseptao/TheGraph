@@ -13,17 +13,29 @@ def may_act_this_timestep(params, step, sL, s):
 
     return {'acting_delegator_ids': acting_delegator_ids}
 
-# NOTE: this most likely needs to be changed, but i put it here so tax can be taken at same level
-def delegator_action(params, step, sL, s):
+""" this just gets all of the events at this timestep into policy variables """
+def delegate_actions(params, step, sL, s):
     # who delegates, 
     # how many tokens.
     timestep = s['timestep']
     delegation_events = params['delegation_tokens_events'].get(timestep)
+    return {'delegation_events': delegation_events}
+
+""" this just gets all of the events at this timestep into policy variables """
+def undelegate_actions(params, step, sL, s):
+    # who delegates, 
+    # how many tokens.
+    timestep = s['timestep']
     undelegation_events = params['undelegation_shares_events'].get(timestep)
+    return {'undelegation_events': undelegation_events}
+
+""" this just gets all of the events at this timestep into policy variables """
+def withdraw_actions(params, step, sL, s):
+    # who delegates, 
+    # how many tokens.
+    timestep = s['timestep']
     withdraw_events = params['withdraw_tokens_events'].get(timestep)
-    return {'delegation_events': delegation_events,
-            'undelegation_events': undelegation_events,
-            'withdraw_events': withdraw_events}
+    return {'withdraw_events': withdraw_events}
 
 def delegate(params, step, sL, s, inputs):
     #  loop through acting delegators id list
