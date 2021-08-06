@@ -10,7 +10,8 @@ from .parts.delegator_behaviors import (delegate, undelegate, withdraw,
                                         account_for_tax)
 
 from .parts.revenue import (revenue_amt, distribute_revenue_to_delegators, 
-                            mint_GRT, distribute_revenue_to_pool)
+                            mint_GRT, distribute_revenue_to_pool,
+                            store_indexing_revenue, store_query_revenue)
 
 # from .parts.private_price import compute_and_store_private_prices
 
@@ -27,7 +28,9 @@ psubs = [
         'variables': {
             'GRT': mint_GRT,
             'delegators': distribute_revenue_to_delegators,
-            'pool_delegated_stake': distribute_revenue_to_pool,    
+            'pool_delegated_stake': distribute_revenue_to_pool,   
+            'indexing_revenue': store_indexing_revenue,
+            'query_revenue': store_query_revenue, 
         },
     },
     {
