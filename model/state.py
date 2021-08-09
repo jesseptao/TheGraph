@@ -42,6 +42,9 @@ genesis_state = {
 
     # R_q
     'query_revenue': 0,
+
+    # needed for bookkeeping step
+    'cumulative_non_indexer_revenue': 0,
     ## END Token State    
     
 }

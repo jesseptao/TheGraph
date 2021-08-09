@@ -9,14 +9,15 @@ from .parts.delegator_behaviors import (delegate, undelegate, withdraw,
                                         withdraw_actions,
                                         account_for_tax)
 
-from .parts.revenue import (revenue_amt, distribute_revenue_to_delegators, 
+from .parts.revenue import (revenue_amt, distribute_revenue_to_indexer, 
                             mint_GRT, distribute_revenue_to_pool,
-                            store_indexing_revenue, store_query_revenue)
+                            store_indexing_revenue, store_query_revenue,
+                            cumulative_non_indexer_revenue)
 
 # from .parts.private_price import compute_and_store_private_prices
 
 from .parts.delegator_behaviors_bookkeeping import (store_pool_delegated_stake,
-                                                    store_shares, increment_epoch)
+                                                    store_shares)
 
 
 psubs = [
@@ -27,10 +28,11 @@ psubs = [
         },
         'variables': {
             'GRT': mint_GRT,
-            'delegators': distribute_revenue_to_delegators,
+            'delegators': distribute_revenue_to_indexer,
             'pool_delegated_stake': distribute_revenue_to_pool,   
             'indexing_revenue': store_indexing_revenue,
             'query_revenue': store_query_revenue, 
+            'cumulative_non_indexer_revenue': cumulative_non_indexer_revenue,
         },
     },
     {

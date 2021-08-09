@@ -39,7 +39,8 @@ def withdraw_actions(params, step, sL, s):
 
 def delegate(params, step, sL, s, inputs):
     #  loop through acting delegators id list
-    pool_delegated_stake = sum([d.delegated_tokens for d in s['delegators'].values()])
+    cumulative_non_indexer_revenue = s['cumulative_non_indexer_revenue']
+    pool_delegated_stake = sum([d.delegated_tokens for d in s['delegators'].values()]) + cumulative_non_indexer_revenue
     # NOTE: must recompute global shares each time because it affects how many tokens go where.
     # shares = s['shares']
     shares = sum([d.shares for d in s['delegators'].values()])
@@ -63,6 +64,14 @@ def process_delegation_event(delegation, delegators, initial_holdings, delegatio
         delegators[delegator_id] = Delegator(delegator_id, holdings = initial_holdings)
     
     delegator = delegators[delegator_id]        
+    print(f"""ACTION: DELEGATE (before)--
+                {delegator_id=}, 
+                {pool_delegated_stake=},
+                {shares=},
+                {delegator.holdings=}, 
+                {delegator.delegated_tokens=}, 
+                {delegator.undelegated_tokens=}, 
+                {delegator.shares=}""")
     
     delegation_tokens_quantity = delegation['tokens']
 
@@ -81,8 +90,10 @@ def process_delegation_event(delegation, delegators, initial_holdings, delegatio
     delegator.shares += new_shares
     # store shares locally only--it has to be recomputed each action block because we don't save it until bookkeeping
     shares += new_shares 
-    print(f"""ACTION: DELEGATE--
+    print(f"""  (after)--
                 {delegator_id=}, 
+                {pool_delegated_stake=},
+                {shares=},
                 {delegator.holdings=}, 
                 {delegator.delegated_tokens=}, 
                 {delegator.undelegated_tokens=}, 
@@ -120,8 +131,14 @@ def undelegate(params, step, sL, s, inputs):
     for undelegation in undelegation_events:        
         
         delegator_id = undelegation['delegator']
-       
+
         delegator = delegators[delegator_id]        
+        print(f'''ACTION: UNDELEGATE (before)--
+            {delegator_id=}, 
+            {delegator.holdings=}, 
+            {delegator.delegated_tokens=}, 
+            {delegator.undelegated_tokens=}, 
+            {delegator.shares=}''')
         
         undelegation_shares_quantity = undelegation['shares']
 
@@ -145,7 +162,7 @@ def undelegate(params, step, sL, s, inputs):
         delegator.shares -= undelegation_shares_quantity
         pool_delegated_stake -= undelegation_shares_quantity
         shares -= undelegation_shares_quantity
-        print(f'''ACTION: UNDELEGATE--
+        print(f'''  (after)--
                     {delegator_id=}, 
                     {delegator.holdings=}, 
                     {delegator.delegated_tokens=}, 
