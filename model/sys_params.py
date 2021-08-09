@@ -11,7 +11,8 @@ allocation_days = [28]
 unbonding_timeblock = [unbonding_days*blocks_per_epoch]
 # represents multiply by 10e-18 to get GRT
 GRT_conversion_rate = -18
-delegation_tax_rate = [Decimal(0.005)]
+# delegation_tax_rate = [Decimal(0.005)]
+delegation_tax_rate = [Decimal(0.0)]
 delegation_leverage = [16]
 delegator_initial_holdings = [Decimal(10e9)]
 
