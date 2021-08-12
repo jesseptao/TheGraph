@@ -1,5 +1,6 @@
 from .parts import utils
 from decimal import Decimal
+from sys import platform
 R_i_rate = [0.03]
 
 indexer_allocation_rate = [0.0050]  # ASSUMED share of GRT minted by subgraph by indexer
@@ -21,11 +22,18 @@ delegator_initial_holdings = [Decimal(10e9)]
 query_fee_cut = [Decimal(0.89)]
 indexer_revenue_cut = [Decimal(0.89)]
 
-delegation_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data\SIstakeDelegateds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
-undelegation_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data\SIstakeLockeds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
-withdraw_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data\SIstakeWithdrawns.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
-indexing_fee_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data\SIallocationCloseds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
-query_fee_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data\SIallocationCollecteds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
+if platform.startswith('win32'):
+    delegation_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data\SIstakeDelegateds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
+    undelegation_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data\SIstakeLockeds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
+    withdraw_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data\SIstakeWithdrawns.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
+    indexing_fee_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data\SIallocationCloseds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
+    query_fee_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data\SIallocationCollecteds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
+else:
+    delegation_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data/SIstakeDelegateds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
+    undelegation_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data/SIstakeLockeds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
+    withdraw_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data/SIstakeWithdrawns.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
+    indexing_fee_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data/SIallocationCloseds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
+    query_fee_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data/SIallocationCollecteds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
 # allocation_created_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data\SIallocationCreateds.csv', limit=None)]
 
 params = {
