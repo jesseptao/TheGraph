@@ -15,13 +15,23 @@ def deposit_stake(params, step, sL, s, inputs):
     if stake_deposited_events:
         print(f"""ACTION: DEPOSIT STAKE (before)--
                 {pool_delegated_stake=}""")
-        new_delegated_stake, pool_delegated_stake = utils.calculated_pool_delegated_stake(s, stake_deposited_events)
+        pool_delegated_stake = utils.calculated_pool_delegated_stake(s)
         print(f"""ACTION: DEPOSIT STAKE (after)--
                 {pool_delegated_stake=}""")
 
     key = 'pool_delegated_stake'
     value = pool_delegated_stake
+    return key, value
+
+def cumulative_deposited_stake(params, step, sL, s, inputs):    
+    cumulative_deposited_stake = s['cumulative_deposited_stake']
+    stake_deposited_events = inputs['stake_deposited_events'] if inputs['stake_deposited_events'] is not None else []    
     
+    total_stake_deposited_this_timestep = utils.total_stake_deposited(stake_deposited_events)    
+    cumulative_deposited_stake += total_stake_deposited_this_timestep
+
+    key = 'cumulative_deposited_stake'
+    value = cumulative_deposited_stake
     return key, value
 
 def add_shares_to_indexer(params, step, sL, s, inputs):
@@ -38,7 +48,6 @@ def add_shares_to_indexer(params, step, sL, s, inputs):
     key = 'delegators'
     value = delegators
     return key, value
-
 
 def add_shares_to_pool(params, step, sL, s, inputs):
     stake_deposited_events = inputs['stake_deposited_events'] if inputs['stake_deposited_events'] is not None else []    

@@ -43,15 +43,11 @@ def load_delegation_event_sequence_from_csv(path, blockNumberShift = 11474307, b
     print(f'loaded {path}.')
     return d
 
-def calculated_pool_delegated_stake(s, stake_deposited_events=None):
+def calculated_pool_delegated_stake(s):
     cumulative_non_indexer_revenue = s['cumulative_non_indexer_revenue']
-    pool_delegated_stake = sum([d.delegated_tokens for d in s['delegators'].values()]) + cumulative_non_indexer_revenue
-    new_delegated_stake = 0
-    if stake_deposited_events:
-        for stake_deposited_event in stake_deposited_events:
-            pool_delegated_stake += stake_deposited_event['tokens']    
-            new_delegated_stake += stake_deposited_event['tokens']    
-    return new_delegated_stake, pool_delegated_stake
+    cumulative_deposited_stake = s['cumulative_deposited_stake']
+    pool_delegated_stake = sum([d.delegated_tokens for d in s['delegators'].values()]) + cumulative_non_indexer_revenue + cumulative_deposited_stake
+    return pool_delegated_stake
 
 def total_stake_deposited(stake_deposited_events):
     total = 0

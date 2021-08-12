@@ -1,5 +1,6 @@
 import random
 from model.parts.delegator import Delegator
+from . import utils
 
 
 def may_act_this_timestep(params, step, sL, s):
@@ -38,12 +39,11 @@ def withdraw_actions(params, step, sL, s):
     return {'withdraw_events': withdraw_events}
 
 def delegate(params, step, sL, s, inputs):
-    #  loop through acting delegators id list
-    cumulative_non_indexer_revenue = s['cumulative_non_indexer_revenue']
-    pool_delegated_stake = sum([d.delegated_tokens for d in s['delegators'].values()]) + cumulative_non_indexer_revenue
+    pool_delegated_stake = utils.calculated_pool_delegated_stake(s)
+    
     # NOTE: must recompute global shares each time because it affects how many tokens go where.
-    # shares = s['shares']
     shares = sum([d.shares for d in s['delegators'].values()])
+    
     delegation_tax_rate = params['delegation_tax_rate']
     delegation_events = inputs['delegation_events'] if inputs['delegation_events'] is not None else []    
     initial_holdings = params['delegator_initial_holdings']
