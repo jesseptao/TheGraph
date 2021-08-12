@@ -3,6 +3,9 @@
 
 # from .parts.add_delegator import instantiate_delegate, should_instantiate_delegate
 
+from .parts.indexer_behaviors import (indexer_actions, deposit_stake,
+                                      add_shares_to_indexer, add_shares_to_pool)
+
 from .parts.delegator_behaviors import (delegate, undelegate, withdraw,
                                         delegate_actions,
                                         undelegate_actions,
@@ -21,6 +24,18 @@ from .parts.delegator_behaviors_bookkeeping import (store_pool_delegated_stake,
 
 
 psubs = [
+    {
+        'label': 'Stake Deposit',
+        'policies': {
+            'indexer_actions': indexer_actions
+        },
+        'variables': {
+            'pool_delegated_stake': deposit_stake,
+            'shares': add_shares_to_pool,
+            'delegators': add_shares_to_indexer,
+
+        },
+    },
     {
         'label': 'Revenue Process',
         'policies': {

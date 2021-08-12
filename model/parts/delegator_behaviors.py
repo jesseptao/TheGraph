@@ -83,7 +83,8 @@ def process_delegation_event(delegation, delegators, initial_holdings, delegatio
     
     # 5 * (0.995) / 10 * 10 = 4.975
     # print(f'{pool_delegated_stake=}, {shares=}, {delegation_tax_rate=}, {delegation_tokens_quantity=}')
-    new_shares = ((delegation_tokens_quantity * (1 - delegation_tax_rate)) / pool_delegated_stake) * shares
+    new_shares = delegation_tokens_quantity * (1 - delegation_tax_rate) if pool_delegated_stake == 0 \
+                 else ((delegation_tokens_quantity * (1 - delegation_tax_rate)) / pool_delegated_stake) * shares
     
     # NOTE: pool_delegated_stake must be updated AFTER new_shares
     pool_delegated_stake += delegation_tokens_quantity * (1 - delegation_tax_rate)

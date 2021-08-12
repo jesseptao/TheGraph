@@ -2,8 +2,8 @@
 from .parts.delegator import Delegator
 from decimal import Decimal
 
-initial_shares = 1243612
-initial_stake = Decimal(1243612)
+initial_shares = 0
+initial_stake = Decimal(0)
 id_indexer = "indexer"
 
 """ System state/state of the delegation pool for one indexer. """
