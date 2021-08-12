@@ -20,6 +20,7 @@ delegator_initial_holdings = [Decimal(10e9)]
 # TODO: this will come from allocation file
 query_fee_cut = [Decimal(0.10)]
 indexer_revenue_cut = [Decimal(0.25)]
+
 if platform.startswith('win32'):
     delegation_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data\SIstakeDelegateds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
     undelegation_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data\SIstakeLockeds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
