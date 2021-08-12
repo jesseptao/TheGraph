@@ -15,7 +15,9 @@ def deposit_stake(params, step, sL, s, inputs):
     if stake_deposited_events:
         print(f"""ACTION: DEPOSIT STAKE (before)--
                 {pool_delegated_stake=}""")
-        pool_delegated_stake = utils.calculated_pool_delegated_stake(s)
+        # have to add in stake deposited here, but we save it as cumulative_deposited_stake for future calculations
+        total_stake_deposited_this_timestep = utils.total_stake_deposited(stake_deposited_events)  
+        pool_delegated_stake = utils.calculated_pool_delegated_stake(s) + total_stake_deposited_this_timestep
         print(f"""ACTION: DEPOSIT STAKE (after)--
                 {pool_delegated_stake=}""")
 

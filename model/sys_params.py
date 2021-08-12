@@ -22,13 +22,6 @@ delegator_initial_holdings = [Decimal(10e9)]
 query_fee_cut = [Decimal(0.89)]
 indexer_revenue_cut = [Decimal(0.89)]
 
-# if platform.startswith('win32'):
-#     delegation_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data\SIstakeDelegateds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
-#     undelegation_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data\SIstakeLockeds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
-#     withdraw_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data\SIstakeWithdrawns.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
-#     indexing_fee_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data\SIallocationCloseds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
-#     query_fee_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data\SIallocationCollecteds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
-# else:
 delegation_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data/SIstakeDelegateds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
 undelegation_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data/SIstakeLockeds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
 withdraw_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data/SIstakeWithdrawns.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
