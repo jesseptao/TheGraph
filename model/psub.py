@@ -25,9 +25,9 @@ psubs = [
             'indexer_actions': indexer_actions
         },
         'variables': {
-            'pool_delegated_stake': deposit_stake,
-            'shares': add_shares_to_pool,
-            'delegators': add_shares_to_indexer,
+            # 'pool_delegated_stake': deposit_stake,
+            # 'shares': add_shares_to_pool,
+            # 'delegators': add_shares_to_indexer,
             'cumulative_deposited_stake': cumulative_deposited_stake
 
         },
