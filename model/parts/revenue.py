@@ -97,13 +97,13 @@ def cumulative_non_indexer_revenue(params, step, sL, s, inputs):
     return key, cumulative_non_indexer_revenue
 
 def store_indexing_revenue(params, step, sL, s, inputs):
-    key = 'indexing_revenue'
-    value = s['indexing_revenue'] + inputs['indexing_fee_amt']
+    key = 'cumulative_indexing_revenue'
+    value = s['cumulative_indexing_revenue'] + inputs['indexing_fee_amt']
     return key, value
 
 def store_query_revenue(params, step, sL, s, inputs):
-    key = 'query_revenue'
-    value = s['query_revenue'] + inputs['query_fee_amt']
+    key = 'cumulative_query_revenue'
+    value = s['cumulative_query_revenue'] + inputs['query_fee_amt']
     return key, value
 
 def calculate_revenue_to_indexer_pool(indexing_revenue, query_revenue, query_fee_cut, indexing_revenue_cut):

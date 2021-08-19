@@ -38,10 +38,10 @@ genesis_state = {
     'GRT': 0,
 
     # R_i
-    'indexing_revenue': 0,
+    'cumulative_indexing_revenue': 0,
 
     # R_q
-    'query_revenue': 0,
+    'cumulative_query_revenue': 0,
 
     # needed for bookkeeping step
     'cumulative_non_indexer_revenue': 0,
