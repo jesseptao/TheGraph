@@ -15,7 +15,8 @@ GRT_conversion_rate = -18
 # delegation_tax_rate = [Decimal(0.005)]
 delegation_tax_rate = [Decimal(0.0)]
 delegation_leverage = [16]
-delegator_initial_holdings = [Decimal(10e9)]
+# delegator_initial_holdings = [Decimal(10e9)]
+delegator_initial_holdings = [0]
 
 # TODO: this will come from allocation file
 # these are indexer cuts

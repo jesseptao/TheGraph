@@ -75,8 +75,9 @@ def process_delegation_event(delegation, delegators, initial_holdings, delegatio
     
     delegation_tokens_quantity = delegation['tokens']
 
-    if delegation_tokens_quantity >= delegator.holdings:
-        delegation_tokens_quantity = delegator.holdings        
+    # NOTE: allow this for now.
+    # if delegation_tokens_quantity >= delegator.holdings:
+    #     delegation_tokens_quantity = delegator.holdings        
 
     delegator.holdings -= delegation_tokens_quantity
     delegator.delegated_tokens += delegation_tokens_quantity * (1 - delegation_tax_rate)
