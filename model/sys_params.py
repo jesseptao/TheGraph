@@ -25,8 +25,10 @@ indexer_revenue_cut = [Decimal(0.89)]
 delegation_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data/SIstakeDelegateds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
 undelegation_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data/SIstakeLockeds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
 withdraw_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data/SIstakeWithdrawns.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
-indexing_fee_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data/SIallocationCloseds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
+# indexing_fee_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data/SIallocationCloseds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
 query_fee_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data/SIallocationCollecteds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
+
+# 1st event is initial stake, each subsequent event is restaked indexing fees.
 stake_deposited_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data/SIstakeDepositeds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
 
 params = {
@@ -51,7 +53,6 @@ params = {
         'delegation_tokens_events': delegation_events,
         'undelegation_shares_events': undelegation_events,
         'withdraw_tokens_events': withdraw_events,
-        'indexing_fee_events': indexing_fee_events,
         'query_fee_events': query_fee_events,
         'stake_deposited_events': stake_deposited_events,
         'delegator_initial_holdings': delegator_initial_holdings

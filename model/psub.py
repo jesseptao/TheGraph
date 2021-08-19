@@ -1,4 +1,6 @@
-from .parts.indexer_behaviors import (cumulative_deposited_stake, indexer_actions)
+from .parts.indexer_behaviors import (cumulative_deposited_stake, indexer_actions,
+                                      is_initial_stake_deposited)
+                                      
 # , deposit_stake, add_shares_to_indexer, add_shares_to_pool)
 
 from .parts.delegator_behaviors import (delegate, undelegate, withdraw,
@@ -28,7 +30,8 @@ psubs = [
             # 'pool_delegated_stake': deposit_stake,
             # 'shares': add_shares_to_pool,
             # 'delegators': add_shares_to_indexer,
-            'cumulative_deposited_stake': cumulative_deposited_stake
+            'cumulative_deposited_stake': cumulative_deposited_stake,
+            'initial_stake_deposited': is_initial_stake_deposited
 
         },
     },

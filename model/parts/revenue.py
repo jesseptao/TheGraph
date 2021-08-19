@@ -7,11 +7,13 @@ def revenue_amt(params, step, sL, prev_state):
     timestep = prev_state['timestep']
     print(f'{timestep=} beginning...')
     
-    indexing_fee_events = params['indexing_fee_events'].get(timestep)
-    if indexing_fee_events is None:
-        indexing_fee_amt = 0
-    else:
-        indexing_fee_amt = sum([e['tokens'] for e in indexing_fee_events])
+    stake_deposited_events = params['stake_deposited_events'].get(timestep)
+    indexing_fee_amt = 0
+    if stake_deposited_events is not None:
+        state_last_timestep = sL[-1][-1]
+        if state_last_timestep['initial_stake_deposited']:
+            # the event has the indexer cut.  divide by cut % to get total indexing fee.
+            indexing_fee_amt = sum([e['tokens'] for e in stake_deposited_events]) / params['indexer_revenue_cut']
     
     query_fee_events = params['query_fee_events'].get(timestep)
     if query_fee_events is None:
@@ -113,7 +115,10 @@ def calculate_revenue_to_indexer_pool(indexing_revenue, query_revenue, query_fee
 
     # D+ = D + Rq * (1 - phi)
     # Query rewards - indexer cut.
-    non_indexer_query_fee_cut = (1 - query_fee_cut) * query_revenue
+    
+    # TODO: is this right?!    
+    non_indexer_query_fee_cut = 0
+    # non_indexer_query_fee_cut = (1 - query_fee_cut) * query_revenue
 
     non_indexer_revenue_net = non_indexer_revenue_cut + non_indexer_query_fee_cut   
     return non_indexer_revenue_net    

@@ -46,6 +46,7 @@ genesis_state = {
     # needed for bookkeeping step
     'cumulative_non_indexer_revenue': 0,
     'cumulative_deposited_stake': 0,
+    'initial_stake_deposited': False,
     ## END Token State    
     
 }
