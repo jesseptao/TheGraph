@@ -1,7 +1,7 @@
-
-
-
-# from .parts.add_delegator import instantiate_delegate, should_instantiate_delegate
+from .parts.indexer_behaviors import (cumulative_deposited_stake, indexer_actions,
+                                      is_initial_stake_deposited)
+                                      
+# , deposit_stake, add_shares_to_indexer, add_shares_to_pool)
 
 from .parts.delegator_behaviors import (delegate, undelegate, withdraw,
                                         delegate_actions,
@@ -9,17 +9,32 @@ from .parts.delegator_behaviors import (delegate, undelegate, withdraw,
                                         withdraw_actions,
                                         account_for_tax)
 
-from .parts.revenue import (revenue_amt, distribute_revenue_to_delegators, 
+from .parts.revenue import (revenue_amt, distribute_revenue_to_indexer, 
                             mint_GRT, distribute_revenue_to_pool,
-                            store_indexing_revenue, store_query_revenue)
+                            store_indexing_revenue, store_query_revenue,
+                            cumulative_non_indexer_revenue)
 
 # from .parts.private_price import compute_and_store_private_prices
 
 from .parts.delegator_behaviors_bookkeeping import (store_pool_delegated_stake,
-                                                    store_shares, increment_epoch)
+                                                    store_shares)
 
 
 psubs = [
+    {
+        'label': 'Stake Deposit',
+        'policies': {
+            'indexer_actions': indexer_actions
+        },
+        'variables': {
+            # 'pool_delegated_stake': deposit_stake,
+            # 'shares': add_shares_to_pool,
+            # 'delegators': add_shares_to_indexer,
+            'cumulative_deposited_stake': cumulative_deposited_stake,
+            'initial_stake_deposited': is_initial_stake_deposited
+
+        },
+    },
     {
         'label': 'Revenue Process',
         'policies': {
@@ -27,16 +42,17 @@ psubs = [
         },
         'variables': {
             'GRT': mint_GRT,
-            'delegators': distribute_revenue_to_delegators,
+            'delegators': distribute_revenue_to_indexer,
             'pool_delegated_stake': distribute_revenue_to_pool,   
-            'indexing_revenue': store_indexing_revenue,
-            'query_revenue': store_query_revenue, 
+            'cumulative_indexing_revenue': store_indexing_revenue,
+            'cumulative_query_revenue': store_query_revenue, 
+            'cumulative_non_indexer_revenue': cumulative_non_indexer_revenue,
         },
     },
     {
         'label': 'Delegate',
         'policies': {
-            'delegate_actions': delegate_actions
+            'delegate_actions': delegate_actions,
         },
         'variables': {
             'delegators': delegate,
@@ -64,6 +80,7 @@ psubs = [
     {
         'label': 'Delegator Behaviors Bookkeeping',
         'policies': {
+            'indexer_actions': indexer_actions
         },
         'variables': {
             'pool_delegated_stake': store_pool_delegated_stake,

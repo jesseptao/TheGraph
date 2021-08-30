@@ -1,5 +1,6 @@
 import random
 from model.parts.delegator import Delegator
+from . import utils
 
 
 def may_act_this_timestep(params, step, sL, s):
@@ -38,11 +39,11 @@ def withdraw_actions(params, step, sL, s):
     return {'withdraw_events': withdraw_events}
 
 def delegate(params, step, sL, s, inputs):
-    #  loop through acting delegators id list
-    pool_delegated_stake = sum([d.delegated_tokens for d in s['delegators'].values()])
+    pool_delegated_stake = utils.calculated_pool_delegated_stake(s)
+    
     # NOTE: must recompute global shares each time because it affects how many tokens go where.
-    # shares = s['shares']
     shares = sum([d.shares for d in s['delegators'].values()])
+    
     delegation_tax_rate = params['delegation_tax_rate']
     delegation_events = inputs['delegation_events'] if inputs['delegation_events'] is not None else []    
     initial_holdings = params['delegator_initial_holdings']
@@ -63,23 +64,38 @@ def process_delegation_event(delegation, delegators, initial_holdings, delegatio
         delegators[delegator_id] = Delegator(delegator_id, holdings = initial_holdings)
     
     delegator = delegators[delegator_id]        
+    print(f"""ACTION: DELEGATE (before)--
+                {delegator_id=}, 
+                {pool_delegated_stake=},
+                {shares=},
+                {delegator.holdings=}, 
+                {delegator.delegated_tokens=}, 
+                {delegator.undelegated_tokens=}, 
+                {delegator.shares=}""")
     
     delegation_tokens_quantity = delegation['tokens']
 
-    if delegation_tokens_quantity >= delegator.holdings:
-        delegation_tokens_quantity = delegator.holdings        
+    # NOTE: allow this for now.
+    # if delegation_tokens_quantity >= delegator.holdings:
+    #     delegation_tokens_quantity = delegator.holdings        
 
     delegator.holdings -= delegation_tokens_quantity
     delegator.delegated_tokens += delegation_tokens_quantity * (1 - delegation_tax_rate)
-    pool_delegated_stake += delegation_tokens_quantity * (1 - delegation_tax_rate)
+    
     # 5 * (0.995) / 10 * 10 = 4.975
-    # print(f'{pool_delegated_stake=}, {shares=}')
-    new_shares = ((delegation_tokens_quantity * (1 - delegation_tax_rate)) / pool_delegated_stake) * shares
+    # print(f'{pool_delegated_stake=}, {shares=}, {delegation_tax_rate=}, {delegation_tokens_quantity=}')
+    new_shares = delegation_tokens_quantity * (1 - delegation_tax_rate) if pool_delegated_stake == 0 \
+                 else ((delegation_tokens_quantity * (1 - delegation_tax_rate)) / pool_delegated_stake) * shares
+    
+    # NOTE: pool_delegated_stake must be updated AFTER new_shares
+    pool_delegated_stake += delegation_tokens_quantity * (1 - delegation_tax_rate)
     delegator.shares += new_shares
     # store shares locally only--it has to be recomputed each action block because we don't save it until bookkeeping
     shares += new_shares 
-    print(f"""ACTION: DELEGATE--
+    print(f"""  (after)--
                 {delegator_id=}, 
+                {pool_delegated_stake=},
+                {shares=},
                 {delegator.holdings=}, 
                 {delegator.delegated_tokens=}, 
                 {delegator.undelegated_tokens=}, 
@@ -117,8 +133,14 @@ def undelegate(params, step, sL, s, inputs):
     for undelegation in undelegation_events:        
         
         delegator_id = undelegation['delegator']
-       
+
         delegator = delegators[delegator_id]        
+        print(f'''ACTION: UNDELEGATE (before)--
+            {delegator_id=}, 
+            {delegator.holdings=}, 
+            {delegator.delegated_tokens=}, 
+            {delegator.undelegated_tokens=}, 
+            {delegator.shares=}''')
         
         undelegation_shares_quantity = undelegation['shares']
 
@@ -142,7 +164,7 @@ def undelegate(params, step, sL, s, inputs):
         delegator.shares -= undelegation_shares_quantity
         pool_delegated_stake -= undelegation_shares_quantity
         shares -= undelegation_shares_quantity
-        print(f'''ACTION: UNDELEGATE--
+        print(f'''  (after)--
                     {delegator_id=}, 
                     {delegator.holdings=}, 
                     {delegator.delegated_tokens=}, 

@@ -2,8 +2,8 @@
 from .parts.delegator import Delegator
 from decimal import Decimal
 
-initial_shares = 1243612
-initial_stake = Decimal(1243612)
+initial_shares = 0
+initial_stake = Decimal(0)
 id_indexer = "indexer"
 
 """ System state/state of the delegation pool for one indexer. """
@@ -38,10 +38,15 @@ genesis_state = {
     'GRT': 0,
 
     # R_i
-    'indexing_revenue': 0,
+    'cumulative_indexing_revenue': 0,
 
     # R_q
-    'query_revenue': 0,
+    'cumulative_query_revenue': 0,
+
+    # needed for bookkeeping step
+    'cumulative_non_indexer_revenue': 0,
+    'cumulative_deposited_stake': 0,
+    'initial_stake_deposited': False,
     ## END Token State    
     
 }

@@ -1,5 +1,6 @@
 import pandas as pd
 from decimal import Decimal
+import sys
 
 def convertFromLongStrToDecimal(d, field, GRT_conversion_rate):
     for events in d.values():
@@ -34,8 +35,25 @@ def load_delegation_event_sequence_from_csv(path, blockNumberShift = 11474307, b
     # print(f'{d=}')
     
     convertFromLongStrToDecimal(d, 'tokens', GRT_conversion_rate)
-    convertFromLongStrToDecimal(d, 'shares', GRT_conversion_rate) 
-
+    try:
+        convertFromLongStrToDecimal(d, 'shares', GRT_conversion_rate) 
+        convertFromLongStrToDecimal(d, 'amount', GRT_conversion_rate)
+    except KeyError:
+        pass
     # d['tokens'] = d['tokens'].apply(lambda x: int(x) * GRT_conversion_rate)
     print(f'loaded {path}.')
     return d
+
+def calculated_pool_delegated_stake(s):
+    cumulative_non_indexer_revenue = s['cumulative_non_indexer_revenue']
+    # cumulative_deposited_stake = s['cumulative_deposited_stake']
+    # pool_delegated_stake = sum([d.delegated_tokens for d in s['delegators'].values()]) + cumulative_non_indexer_revenue + cumulative_deposited_stake
+    pool_delegated_stake = sum([d.delegated_tokens for d in s['delegators'].values()]) + cumulative_non_indexer_revenue
+    return pool_delegated_stake
+
+def total_stake_deposited(stake_deposited_events):
+    total = 0
+    if stake_deposited_events:
+        for stake_deposited_event in stake_deposited_events:
+            total += stake_deposited_event['tokens']    
+    return total

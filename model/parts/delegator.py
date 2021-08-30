@@ -28,7 +28,10 @@ class Delegator(object):
         
         # Not allowed to sell below this amount
         self.minimum_shares = minimum_shares
-   
+
+    def __repr__(self):
+        return f'{self.id=}, {self.shares=}, {self.delegated_tokens=}'
+
     # member of the sharing pool (True/False)
     def is_member(self):
         return self.shares > 0
