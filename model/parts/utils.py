@@ -37,6 +37,7 @@ def load_delegation_event_sequence_from_csv(path, blockNumberShift = 11474307, b
     convertFromLongStrToDecimal(d, 'tokens', GRT_conversion_rate)
     try:
         convertFromLongStrToDecimal(d, 'shares', GRT_conversion_rate) 
+        convertFromLongStrToDecimal(d, 'amount', GRT_conversion_rate)
     except KeyError:
         pass
     # d['tokens'] = d['tokens'].apply(lambda x: int(x) * GRT_conversion_rate)

@@ -7,13 +7,11 @@ def revenue_amt(params, step, sL, prev_state):
     timestep = prev_state['timestep']
     print(f'{timestep=} beginning...')
     
-    stake_deposited_events = params['stake_deposited_events'].get(timestep)
+    rewards_assigned_events = params['rewards_assigned_events'].get(timestep)
     indexing_fee_amt = 0
-    if stake_deposited_events is not None:
-        state_last_timestep = sL[-1][-1]
-        if state_last_timestep['initial_stake_deposited']:
-            # the event has the indexer cut.  divide by cut % to get total indexing fee.
-            indexing_fee_amt = sum([e['tokens'] for e in stake_deposited_events]) / params['indexer_revenue_cut']
+    if rewards_assigned_events is not None:
+        # the event has the indexer cut.  divide by cut % to get total indexing fee.
+        indexing_fee_amt = sum([e['amount'] for e in rewards_assigned_events])
     
     query_fee_events = params['query_fee_events'].get(timestep)
     if query_fee_events is None:

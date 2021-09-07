@@ -51,3 +51,4 @@ def is_initial_stake_deposited(params, step, SL, s, inputs):
     key = 'initial_stake_deposited'
     value = initial_stake_deposited
     return key, value
+

@@ -13,4 +13,3 @@ def store_pool_delegated_stake(params, step, sL, s, inputs):
     pool_delegated_stake = utils.calculated_pool_delegated_stake(s)
 
     return key, pool_delegated_stake
-

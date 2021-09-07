@@ -15,8 +15,7 @@ GRT_conversion_rate = -18
 # delegation_tax_rate = [Decimal(0.005)]
 delegation_tax_rate = [Decimal(0.0)]
 delegation_leverage = [16]
-# delegator_initial_holdings = [Decimal(10e9)]
-delegator_initial_holdings = [0]
+delegator_initial_holdings = [Decimal(10e9)]
 
 # TODO: this will come from allocation file
 # these are indexer cuts
@@ -26,11 +25,10 @@ indexer_revenue_cut = [Decimal(0.89)]
 delegation_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data/SIstakeDelegateds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
 undelegation_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data/SIstakeLockeds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
 withdraw_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data/SIstakeWithdrawns.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
-# indexing_fee_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data/SIallocationCloseds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
+indexing_fee_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data/SIallocationCloseds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
 query_fee_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data/SIallocationCollecteds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
-
-# 1st event is initial stake, each subsequent event is restaked indexing fees.
 stake_deposited_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data/SIstakeDepositeds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
+rewards_assigned_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data/SIrewardsAssigneds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
 
 params = {
         "r_del": [10],        #	Indexer’s initial delegated stake
@@ -54,7 +52,9 @@ params = {
         'delegation_tokens_events': delegation_events,
         'undelegation_shares_events': undelegation_events,
         'withdraw_tokens_events': withdraw_events,
+        'indexing_fee_events': indexing_fee_events,
         'query_fee_events': query_fee_events,
         'stake_deposited_events': stake_deposited_events,
+        'rewards_assigned_events': rewards_assigned_events,
         'delegator_initial_holdings': delegator_initial_holdings
 }
