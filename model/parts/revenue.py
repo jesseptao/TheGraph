@@ -10,10 +10,10 @@ def revenue_amt(params, step, sL, prev_state):
     rewards_assigned_events = params['rewards_assigned_events'].get(timestep)
     indexing_fee_amt = 0
     if rewards_assigned_events is not None:
-        # the event has the indexer cut.  divide by cut % to get total indexing fee.
         indexing_fee_amt = sum([e['amount'] for e in rewards_assigned_events])
     
     query_fee_events = params['query_fee_events'].get(timestep)
+    # print(query_fee_events)
     if query_fee_events is None:
         query_fee_amt = 0
     else:
@@ -106,14 +106,12 @@ def store_query_revenue(params, step, sL, s, inputs):
 
 def calculate_revenue_to_indexer_pool(indexing_revenue, query_revenue, query_fee_cut, indexing_revenue_cut):
     """ Calculate and distribute query and indexing rewards to indexer pool """
-    # step 1: collect revenue from the state
     # D+ = D + Ri * (1 - alpha)
     # Indexing rewards - indexer cut.    
     non_indexer_revenue_cut = (1 - indexing_revenue_cut) * indexing_revenue    
 
     # D+ = D + Rq * (1 - phi)
-    # Query rewards - indexer cut.
-    
+    # Query rewards - indexer cut.   
     # TODO: is this right?!    
     non_indexer_query_fee_cut = 0
     # non_indexer_query_fee_cut = (1 - query_fee_cut) * query_revenue

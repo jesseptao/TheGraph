@@ -39,7 +39,7 @@ def withdraw_actions(params, step, sL, s):
     return {'withdraw_events': withdraw_events}
 
 def delegate(params, step, sL, s, inputs):
-    pool_delegated_stake = utils.calculated_pool_delegated_stake(s)
+    pool_delegated_stake = s['pool_delegated_stake']
     
     # NOTE: must recompute global shares each time because it affects how many tokens go where.
     shares = sum([d.shares for d in s['delegators'].values()])
@@ -64,23 +64,22 @@ def process_delegation_event(delegation, delegators, initial_holdings, delegatio
         delegators[delegator_id] = Delegator(delegator_id, holdings = initial_holdings)
     
     delegator = delegators[delegator_id]        
+    delegation_tokens_quantity = delegation['tokens']
+
     print(f"""ACTION: DELEGATE (before)--
                 {delegator_id=}, 
                 {pool_delegated_stake=},
+                {delegation_tokens_quantity=},
                 {shares=},
                 {delegator.holdings=}, 
-                {delegator.delegated_tokens=}, 
                 {delegator.undelegated_tokens=}, 
                 {delegator.shares=}""")
-    
-    delegation_tokens_quantity = delegation['tokens']
 
     # NOTE: allow this for now.
     # if delegation_tokens_quantity >= delegator.holdings:
     #     delegation_tokens_quantity = delegator.holdings        
 
     delegator.holdings -= delegation_tokens_quantity
-    delegator.delegated_tokens += delegation_tokens_quantity * (1 - delegation_tax_rate)
     
     # 5 * (0.995) / 10 * 10 = 4.975
     # print(f'{pool_delegated_stake=}, {shares=}, {delegation_tax_rate=}, {delegation_tokens_quantity=}')
@@ -95,9 +94,9 @@ def process_delegation_event(delegation, delegators, initial_holdings, delegatio
     print(f"""  (after)--
                 {delegator_id=}, 
                 {pool_delegated_stake=},
-                {shares=},
+                {delegation_tokens_quantity=},
+                {shares=},                
                 {delegator.holdings=}, 
-                {delegator.delegated_tokens=}, 
                 {delegator.undelegated_tokens=}, 
                 {delegator.shares=}""")
     return pool_delegated_stake, shares
@@ -119,8 +118,7 @@ def account_for_tax(params, step, sL, s, inputs):
 def undelegate(params, step, sL, s, inputs):
     
     # pool_delegated_stake needs to be updated
-    # pool_delegated_stake = s['pool_delegated_stake']
-    pool_delegated_stake = sum([d.delegated_tokens for d in s['delegators'].values()])
+    pool_delegated_stake = s['pool_delegated_stake']
     undelegation_events = inputs['undelegation_events'] if inputs['undelegation_events'] is not None else []    
     delegators = s['delegators']
     
@@ -138,7 +136,6 @@ def undelegate(params, step, sL, s, inputs):
         print(f'''ACTION: UNDELEGATE (before)--
             {delegator_id=}, 
             {delegator.holdings=}, 
-            {delegator.delegated_tokens=}, 
             {delegator.undelegated_tokens=}, 
             {delegator.shares=}''')
         
@@ -160,14 +157,12 @@ def undelegate(params, step, sL, s, inputs):
         undelegated_tokens = undelegation_shares_quantity * pool_delegated_stake / shares
         until = undelegation['until']
         delegator.set_undelegated_tokens(until, undelegated_tokens)
-        delegator.delegated_tokens -= undelegated_tokens
         delegator.shares -= undelegation_shares_quantity
-        pool_delegated_stake -= undelegation_shares_quantity
+        pool_delegated_stake -= undelegated_tokens
         shares -= undelegation_shares_quantity
         print(f'''  (after)--
                     {delegator_id=}, 
                     {delegator.holdings=}, 
-                    {delegator.delegated_tokens=}, 
                     {delegator.undelegated_tokens=}, 
                     {delegator.shares=}''')
     key = 'delegators'
@@ -197,7 +192,6 @@ def withdraw(params, step, sL, s, inputs):
         print(f'''ACTION: WITHDRAW--
                     {delegator_id=}, 
                     {delegator.holdings=}, 
-                    {delegator.delegated_tokens=}, 
                     {delegator.undelegated_tokens=}, 
                     {delegator.shares=}''')
     key = 'delegators'

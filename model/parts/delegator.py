@@ -11,9 +11,6 @@ class Delegator(object):
 
         self.shares = shares
 
-        # Tokens locked in delegation, d
-        self.delegated_tokens = delegated_tokens
-        
         # Tokens locked in undelegation, l  
         self.undelegated_tokens = 0
 
@@ -30,7 +27,7 @@ class Delegator(object):
         self.minimum_shares = minimum_shares
 
     def __repr__(self):
-        return f'{self.id=}, {self.shares=}, {self.delegated_tokens=}'
+        return f'{self.id=}, {self.shares=}'
 
     # member of the sharing pool (True/False)
     def is_member(self):

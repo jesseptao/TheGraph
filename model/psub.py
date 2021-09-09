@@ -16,8 +16,8 @@ from .parts.revenue import (revenue_amt, distribute_revenue_to_indexer,
 
 # from .parts.private_price import compute_and_store_private_prices
 
-from .parts.delegator_behaviors_bookkeeping import (store_pool_delegated_stake,
-                                                    store_shares)
+from .parts.delegator_behaviors_bookkeeping import (store_shares, add_delegated_stake_to_pool,
+                                                    subtract_undelegated_stake_from_pool)
 
 
 psubs = [
@@ -56,6 +56,7 @@ psubs = [
         },
         'variables': {
             'delegators': delegate,
+            'pool_delegated_stake': add_delegated_stake_to_pool,
             'GRT': account_for_tax,
         },
     },
@@ -66,6 +67,7 @@ psubs = [
         },
         'variables': {
             'delegators': undelegate,
+            'pool_delegated_stake': subtract_undelegated_stake_from_pool,            
         },
     },    
     {
@@ -83,7 +85,7 @@ psubs = [
             'indexer_actions': indexer_actions
         },
         'variables': {
-            'pool_delegated_stake': store_pool_delegated_stake,
+            # 'pool_delegated_stake': store_pool_delegated_stake,
             'shares': store_shares,
         },
     },
