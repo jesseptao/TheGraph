@@ -22,8 +22,8 @@ delegator_initial_holdings = [Decimal(10e9)]
 query_fee_cut = [Decimal(0.89)]
 indexer_revenue_cut = [Decimal(0.89)]
 
-event_path = 'GraphQL_data'
-# event_path = 'another_indexer/single_indexer'
+# event_path = 'GraphQL_data'
+event_path = 'another_indexer/single_indexer'
 delegation_events = [utils.load_delegation_event_sequence_from_csv(f'{event_path}/SIstakeDelegateds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
 undelegation_events = [utils.load_delegation_event_sequence_from_csv(f'{event_path}/SIstakeLockeds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
 withdraw_events = [utils.load_delegation_event_sequence_from_csv(f'{event_path}/SIstakeWithdrawns.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
