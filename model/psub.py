@@ -32,7 +32,6 @@ psubs = [
             # 'delegators': add_shares_to_indexer,
             'cumulative_deposited_stake': cumulative_deposited_stake,
             'initial_stake_deposited': is_initial_stake_deposited
-
         },
     },
     {

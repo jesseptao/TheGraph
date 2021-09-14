@@ -126,7 +126,7 @@ def undelegate(params, step, sL, s, inputs):
     shares = sum([d.shares for d in s['delegators'].values()])
     
     timestep = s['timestep']
-   
+    # print(undelegation_events)
     #  loop through acting delegators id list
     for undelegation in undelegation_events:        
         
@@ -152,7 +152,7 @@ def undelegate(params, step, sL, s, inputs):
         # Withdraw tokens if available
         withdrawableDelegatedTokens = delegator.getWithdrawableDelegatedTokens(timestep)
         if withdrawableDelegatedTokens > 0:
-            delegator.withdraw()
+            delegator.withdraw(withdrawableDelegatedTokens)
 
         undelegated_tokens = undelegation_shares_quantity * pool_delegated_stake / shares
         until = undelegation['until']

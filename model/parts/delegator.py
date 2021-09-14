@@ -21,7 +21,7 @@ class Delegator(object):
         self.holdings = holdings
 
         # used to discount cash flows. 1 / (1 - discount_rate)
-        self.time_factor = 1 / (1 - discount_rate)
+        # self.time_factor = 1 / (1 - discount_rate)
         
         # Not allowed to sell below this amount
         self.minimum_shares = minimum_shares

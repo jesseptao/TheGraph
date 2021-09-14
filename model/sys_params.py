@@ -22,13 +22,15 @@ delegator_initial_holdings = [Decimal(10e9)]
 query_fee_cut = [Decimal(0.89)]
 indexer_revenue_cut = [Decimal(0.89)]
 
-delegation_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data/SIstakeDelegateds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
-undelegation_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data/SIstakeLockeds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
-withdraw_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data/SIstakeWithdrawns.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
-indexing_fee_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data/SIallocationCloseds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
-query_fee_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data/SIallocationCollecteds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
-stake_deposited_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data/SIstakeDepositeds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
-rewards_assigned_events = [utils.load_delegation_event_sequence_from_csv('GraphQL_data/SIrewardsAssigneds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
+event_path = 'GraphQL_data'
+# event_path = 'another_indexer/single_indexer'
+delegation_events = [utils.load_delegation_event_sequence_from_csv(f'{event_path}/SIstakeDelegateds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
+undelegation_events = [utils.load_delegation_event_sequence_from_csv(f'{event_path}/SIstakeLockeds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
+withdraw_events = [utils.load_delegation_event_sequence_from_csv(f'{event_path}/SIstakeWithdrawns.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
+indexing_fee_events = [utils.load_delegation_event_sequence_from_csv(f'{event_path}/SIallocationCloseds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
+query_fee_events = [utils.load_delegation_event_sequence_from_csv(f'{event_path}/SIallocationCollecteds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
+stake_deposited_events = [utils.load_delegation_event_sequence_from_csv(f'{event_path}/SIstakeDepositeds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
+rewards_assigned_events = [utils.load_delegation_event_sequence_from_csv(f'{event_path}/SIrewardsAssigneds.csv', limit=None, GRT_conversion_rate=GRT_conversion_rate)]
 
 params = {
         "r_del": [10],        #	Indexer’s initial delegated stake
