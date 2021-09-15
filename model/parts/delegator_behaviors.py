@@ -51,11 +51,12 @@ def delegate(params, step, sL, s, inputs):
     # print(f'act: {acting_delegator_ids=}')
     
     for delegation in delegation_events:
-        pool_delegated_stake, shares = process_delegation_event(delegation, delegators, initial_holdings, 
+        # this updates the delegators object.
+        pool_delegated_stake, shares, delegators = process_delegation_event(delegation, delegators, initial_holdings, 
                                             delegation_tax_rate, pool_delegated_stake, shares)        
 
     key = 'delegators'
-    value = s['delegators']
+    value = delegators
     return key, value
 
 def process_delegation_event(delegation, delegators, initial_holdings, delegation_tax_rate, pool_delegated_stake, shares):
@@ -78,7 +79,8 @@ def process_delegation_event(delegation, delegators, initial_holdings, delegatio
     # NOTE: allow this for now.
     # if delegation_tokens_quantity >= delegator.holdings:
     #     delegation_tokens_quantity = delegator.holdings        
-
+    print(type(delegator.holdings))
+    print(type(delegation_tokens_quantity))
     delegator.holdings -= delegation_tokens_quantity
     
     # 5 * (0.995) / 10 * 10 = 4.975
@@ -86,7 +88,7 @@ def process_delegation_event(delegation, delegators, initial_holdings, delegatio
     new_shares = delegation_tokens_quantity * (1 - delegation_tax_rate) if pool_delegated_stake == 0 \
                  else ((delegation_tokens_quantity * (1 - delegation_tax_rate)) / pool_delegated_stake) * shares
     
-    # NOTE: pool_delegated_stake must be updated AFTER new_shares
+    # NOTE: pool_delegated_stake must be updated AFTER new_shares is calculated
     pool_delegated_stake += delegation_tokens_quantity * (1 - delegation_tax_rate)
     delegator.shares += new_shares
     # store shares locally only--it has to be recomputed each action block because we don't save it until bookkeeping
@@ -99,7 +101,7 @@ def process_delegation_event(delegation, delegators, initial_holdings, delegatio
                 {delegator.holdings=}, 
                 {delegator.undelegated_tokens=}, 
                 {delegator.shares=}""")
-    return pool_delegated_stake, shares
+    return pool_delegated_stake, shares, delegators
 
 def account_for_tax(params, step, sL, s, inputs):
     key = 'GRT'

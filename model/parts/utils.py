@@ -1,6 +1,8 @@
 import pandas as pd
 from decimal import Decimal
 import sys
+
+from pandas.core.accessor import delegate_names
 def convertFromLongStrToDecimal(d, field, GRT_conversion_rate):
     for events in d.values():
         for event in events:                       
@@ -17,6 +19,42 @@ def convertFromLongStrToDecimal(d, field, GRT_conversion_rate):
                 # print("Unexpected error:", sys.exc_info()[0])
                 event[field] = Decimal(0)
 
+def load_all_events(path,GRT_conversion_rate = -18):
+    # make them ordered by blockNumber
+    # squish them because time between doesn't matter
+    # **but they have to be interleaved between all event types.
+    # reset index
+    # break back out to distinct types
+    # use block number, resolve conflicts with log index.
+    all_events = pd.read_csv(f'{path}/singleIndexer.csv')
+    all_events.reset_index(inplace=True)
+    all_events = all_events.rename(columns={'index': 'timestep'})
+    all_events.set_index('timestep', inplace=True, drop=False)
+    all_events.sort_values(['blockNumber', 'logIndex'], ascending=[True, True])
+
+    # print(all_events.loc[:, ['blockNumber', 'logIndex']])    
+
+    # create a dict from the df where duplicate timesteps appear in a list of dicts under the same timestep index. 
+    # NOTE: there should be no duplicates anymore.
+    event_types = ['stakeDelegateds', 'stakeDelegatedLockeds', 'stakeDelegatedWithdrawns', 'allocationCloseds', 'allocationCollecteds', 'stakeDepositeds', 'rewardsAssigneds']
+    events_list_of_dicts = []
+    for event_type in event_types:
+        events = all_events[all_events['type'] == event_type]
+        d = events.groupby(level=0).apply(lambda x: x.to_dict('records')).to_dict()
+        print(event_type)
+        
+        convertFromLongStrToDecimal(d, 'tokens', GRT_conversion_rate)
+        # print(d)
+        try:
+            convertFromLongStrToDecimal(d, 'shares', GRT_conversion_rate) 
+            convertFromLongStrToDecimal(d, 'amount', GRT_conversion_rate)
+        except KeyError:
+            pass
+        # print(len(d))
+        events_list_of_dicts.append(d)
+    return events_list_of_dicts
+
+
 def load_delegation_event_sequence_from_csv(path, blockNumberShift = 11474307, blocksPerEpoch = 6500, limit = None, GRT_conversion_rate = -18):
     df = pd.read_csv(path)
     # limit number of records read in 
@@ -26,7 +64,6 @@ def load_delegation_event_sequence_from_csv(path, blockNumberShift = 11474307, b
         pass
     # print(f'loading {path}...')
     
-    # create new 
     df['timestep'] = (df.blockNumber - blockNumberShift) / blocksPerEpoch + 1
     df.timestep = df.timestep.astype(int)
     
@@ -55,3 +92,6 @@ def total_stake_deposited(stake_deposited_events):
             total += stake_deposited_event['tokens']    
     return total
 
+if __name__ == '__main__':
+    event_path = 'another_indexer/single_indexer'
+    delegation_events, undelegation_events, withdraw_events, indexing_fee_events, query_fee_events, stake_deposited_events, rewards_assigned_events = load_all_events(event_path)
