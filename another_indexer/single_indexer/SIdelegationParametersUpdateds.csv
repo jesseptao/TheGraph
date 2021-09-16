@@ -1,0 +1,7 @@
+allocationID,blockNumber,epoch,id,indexer,logIndex,subgraphDeploymentID,tokens,type,isDelegator,sender,curationFees,from,rebateFees,delegator,shares,eventTime,until,indexingRewardCut,queryFeeCut,delegationFees,amount
+,11474009,,0xcb621a8a549e4e3c616a7a1e27dc92b28722c90ac37f60fe1f1d5e5ed1ff0ecf-121,0x7ab4cf25330ed7277ac7ab59380b68eea68abb0e,121,,,delegationParametersUpdateds,,,,,,,,,,1000000.0,1000000.0,,
+,11474426,,0x19cf8bd30df43cc8518c16bfce7297c32495bbc3c4c1da83ef91f75cb678b8a0-162,0x7ab4cf25330ed7277ac7ab59380b68eea68abb0e,162,,,delegationParametersUpdateds,,,,,,,,,,90000.0,80000.0,,
+,11474474,,0x2fe9986fb33a19533e14dc68a42672fb1723fe137c8e6e520f8e4c150e196421-272,0x7ab4cf25330ed7277ac7ab59380b68eea68abb0e,272,,,delegationParametersUpdateds,,,,,,,,,,80000.0,100000.0,,
+,11474679,,0x31dbb2968fd0257b8c54bfbe8f94b83f5a19b973954732264235c2f39170d249-125,0x7ab4cf25330ed7277ac7ab59380b68eea68abb0e,125,,,delegationParametersUpdateds,,,,,,,,,,900000.0,900000.0,,
+,11474860,,0x23f76a8dcc384453d0806f98bad397583a84e9f572ef80e26336a24b2a45cefd-27,0x7ab4cf25330ed7277ac7ab59380b68eea68abb0e,27,,,delegationParametersUpdateds,,,,,,,,,,800000.0,800000.0,,
+,11503675,,0x4a9ddb1de3045f91c482a873d0479b1d1afcfa18799d3de49fc3979978ab0411-196,0x7ab4cf25330ed7277ac7ab59380b68eea68abb0e,196,,,delegationParametersUpdateds,,,,,,,,,,800000.0,800000.0,,
