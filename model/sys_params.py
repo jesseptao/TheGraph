@@ -19,8 +19,8 @@ delegator_initial_holdings = [Decimal(10e9)]
 
 # TODO: this will come from allocation file
 # these are indexer cuts
-query_fee_cut = [Decimal(0.89)]
-indexer_revenue_cut = [Decimal(0.89)]
+query_fee_cut = [Decimal(0.8)]
+indexer_revenue_cut = [Decimal(0.8)]
 
 # event_path = 'GraphQL_data'
 event_path = 'another_indexer/single_indexer'
