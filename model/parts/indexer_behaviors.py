@@ -33,11 +33,9 @@ def cumulative_deposited_stake(params, step, sL, s, inputs):
     stake_deposited_events = inputs['stake_deposited_events'] if inputs['stake_deposited_events'] is not None else []    
     total_stake_deposited_this_timestep = utils.total_stake_deposited(stake_deposited_events)    
     
-    if s['initial_stake_deposited']:
-        # initial stake has already been deposited, so TODO: what happens here?
-        pass
-    else:        
+    if stake_deposited_events:
         cumulative_deposited_stake += total_stake_deposited_this_timestep
+        print(f'STAKE DEPOSITED: {total_stake_deposited_this_timestep}')
 
     key = 'cumulative_deposited_stake'
     value = cumulative_deposited_stake

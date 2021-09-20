@@ -52,9 +52,11 @@ def load_all_events(path,GRT_conversion_rate = -18):
     events_list_of_dicts = []
     for event_type in event_types:
         events = all_events[all_events['type'] == event_type]
-        
+        print(f'{event_type}: {len(events)} events')
+        # print(events['timestep'])
         d = events.groupby(level=0).apply(lambda x: x.to_dict('records')).to_dict()
-        print(event_type)
+        
+        # print(d)
         convertFromLongStrToDecimal(d, 'tokens', GRT_conversion_rate)
         # print(d)
         try:
@@ -64,8 +66,10 @@ def load_all_events(path,GRT_conversion_rate = -18):
             convertFromLongStrToDecimalPercent(d, 'queryFeeCut')
         except KeyError:
             pass
-        # print(len(d))
         events_list_of_dicts.append(d)
+    print(f'TOTAL NUMBER OF EVENTS: {len(all_events)}')
+    print(f'Set SIMULATION_TIME_STEPS in config.py to {len(all_events)}')
+    print()
     return events_list_of_dicts
 
 
