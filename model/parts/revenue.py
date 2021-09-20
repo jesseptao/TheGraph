@@ -38,8 +38,8 @@ def distribute_revenue_to_indexer(params, step, sL, s, inputs):
     
     # step 1: collect revenue from the state
     if indexing_revenue != 0 or query_revenue != 0:
-        query_fee_cut = params['query_fee_cut']
-        indexing_revenue_cut = params['indexer_revenue_cut']
+        query_fee_cut = s['query_fee_cut']
+        indexing_revenue_cut = s['indexer_revenue_cut']
 
         print(f'ACTION: DISTRIBUTE REVENUE TO INDEXER')
         indexer = s['delegators']['indexer']
@@ -68,8 +68,8 @@ def distribute_revenue_to_pool(params, step, sL, s, inputs):
         print(f'ACTION: DISTRIBUTE REVENUE TO POOL')
 
         
-        query_fee_cut = params['query_fee_cut']
-        indexing_revenue_cut = params['indexer_revenue_cut']
+        query_fee_cut = s['query_fee_cut']
+        indexing_revenue_cut = s['indexer_revenue_cut']
 
         # 5.2 D+ = D + Ri * (1 - phi)
         non_indexer_revenue = calculate_revenue_to_indexer_pool(indexing_revenue, query_revenue, query_fee_cut, indexing_revenue_cut)
@@ -86,8 +86,8 @@ def cumulative_non_indexer_revenue(params, step, sL, s, inputs):
     cumulative_non_indexer_revenue = s['cumulative_non_indexer_revenue']
 
     if indexing_revenue != 0 or query_revenue != 0:
-        query_fee_cut = params['query_fee_cut']
-        indexing_revenue_cut = params['indexer_revenue_cut']
+        query_fee_cut = s['query_fee_cut']
+        indexing_revenue_cut = s['indexer_revenue_cut']
         # print(f'  {indexing_revenue=}, {query_revenue=}, {cumulative_non_indexer_revenue=} (before)')
         cumulative_non_indexer_revenue += calculate_revenue_to_indexer_pool(indexing_revenue, query_revenue, query_fee_cut, indexing_revenue_cut)
         # print(f'  {indexing_revenue=}, {query_revenue=}, {cumulative_non_indexer_revenue=} (after)')

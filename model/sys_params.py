@@ -19,13 +19,14 @@ delegator_initial_holdings = [Decimal(10e9)]
 
 # TODO: this will come from allocation file
 # these are indexer cuts
-query_fee_cut = [Decimal(0.8)]
-indexer_revenue_cut = [Decimal(0.8)]
+# query_fee_cut = [Decimal(0.8)]
+# indexer_revenue_cut = [Decimal(0.8)]
 
 # event_path = 'GraphQL_data'
 event_path = 'another_indexer/single_indexer'
 delegation_events, undelegation_events, withdraw_events, indexing_fee_events, \
-        query_fee_events, stake_deposited_events, rewards_assigned_events = utils.load_all_events(event_path)
+        query_fee_events, stake_deposited_events, rewards_assigned_events, \
+        delegation_parameter_events = utils.load_all_events(event_path)
 # print(delegation_events)
 params = {
         "r_del": [10],        #	Indexer’s initial delegated stake
@@ -44,8 +45,6 @@ params = {
         'R_i_rate': R_i_rate, # indexer reward revenue rate (inflationary rewards)
         'allocation_days': allocation_days, # time for allocation
         'indexer_allocation_rate': indexer_allocation_rate, # ASSUMED share of minted by subgraph by indexer
-        "indexer_revenue_cut": indexer_revenue_cut,         # 1-theta  (theta is what all of the other delegators get)
-        'query_fee_cut': query_fee_cut, # query fee indexer cut rate
         'delegation_tokens_events': [delegation_events],
         'undelegation_shares_events': [undelegation_events],
         'withdraw_tokens_events': [withdraw_events],
@@ -53,5 +52,6 @@ params = {
         'query_fee_events': [query_fee_events],
         'stake_deposited_events': [stake_deposited_events],
         'rewards_assigned_events': [rewards_assigned_events],
+        'delegation_parameter_events': [delegation_parameter_events],
         'delegator_initial_holdings': delegator_initial_holdings
 }

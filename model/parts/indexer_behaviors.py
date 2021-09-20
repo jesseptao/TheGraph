@@ -7,7 +7,10 @@ def indexer_actions(params, step, sL, s):
     # how many tokens.
     timestep = s['timestep']
     stake_deposited_events = params['stake_deposited_events'].get(timestep)
-    return {'stake_deposited_events': stake_deposited_events}
+    delegation_parameter_events = params['delegation_parameter_events'].get(timestep)
+    # print(f'DELEGATION PARAMETER EVENTS {delegation_parameter_events}')
+    return {'stake_deposited_events': stake_deposited_events,
+            'delegation_parameter_events': delegation_parameter_events}
 
 # def deposit_stake(params, step, sL, s, inputs):
 #     stake_deposited_events = inputs['stake_deposited_events'] if inputs['stake_deposited_events'] is not None else []    
@@ -52,3 +55,21 @@ def is_initial_stake_deposited(params, step, SL, s, inputs):
     value = initial_stake_deposited
     return key, value
 
+def store_query_fee_cut(params, step, SL, s, inputs):
+    key = 'query_fee_cut'
+    delegation_parameter_events = inputs['delegation_parameter_events'] if inputs['delegation_parameter_events'] is not None else []    
+    value = s[key]
+    
+    for event in delegation_parameter_events:
+        value = event['queryFeeCut']
+        print(f'STORE QUERY FEE CUT={value}')
+    return key, value
+    
+def store_indexer_fee_cut(params, step, SL, s, inputs):    
+    key = 'indexer_revenue_cut'    
+    delegation_parameter_events = inputs['delegation_parameter_events'] if inputs['delegation_parameter_events'] is not None else []    
+    value = s[key]
+    for event in delegation_parameter_events:
+        value = event['indexingRewardCut']
+        print(f'STORE INDEXER FEE CUT={value}')
+    return key, value

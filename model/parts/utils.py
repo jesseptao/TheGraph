@@ -19,6 +19,17 @@ def convertFromLongStrToDecimal(d, field, GRT_conversion_rate):
                 # print("Unexpected error:", sys.exc_info()[0])
                 event[field] = Decimal(0)
 
+def convertFromLongStrToDecimalPercent(d, field):
+    # 1000000 is 100%
+    # so divide by a million to get percent.
+    for events in d.values():
+        for event in events:                       
+            # sometimes it comes in as a number, sometimes as a string
+            event[field] = Decimal(event[field])
+
+            # put in a decimal place 18 chars from the right then convert to Decimal to avoid overflow error.
+            event[field] = event[field] / 1000000
+
 def load_all_events(path,GRT_conversion_rate = -18):
     # make them ordered by blockNumber
     # squish them because time between doesn't matter
@@ -36,18 +47,21 @@ def load_all_events(path,GRT_conversion_rate = -18):
 
     # create a dict from the df where duplicate timesteps appear in a list of dicts under the same timestep index. 
     # NOTE: there should be no duplicates anymore.
-    event_types = ['stakeDelegateds', 'stakeDelegatedLockeds', 'stakeDelegatedWithdrawns', 'allocationCloseds', 'allocationCollecteds', 'stakeDepositeds', 'rewardsAssigneds']
+    event_types = ['stakeDelegateds', 'stakeDelegatedLockeds', 'stakeDelegatedWithdrawns', 'allocationCloseds', 
+                   'allocationCollecteds', 'stakeDepositeds', 'rewardsAssigneds', 'delegationParametersUpdateds']
     events_list_of_dicts = []
     for event_type in event_types:
         events = all_events[all_events['type'] == event_type]
+        
         d = events.groupby(level=0).apply(lambda x: x.to_dict('records')).to_dict()
         print(event_type)
-        
         convertFromLongStrToDecimal(d, 'tokens', GRT_conversion_rate)
         # print(d)
         try:
             convertFromLongStrToDecimal(d, 'shares', GRT_conversion_rate) 
-            convertFromLongStrToDecimal(d, 'amount', GRT_conversion_rate)
+            convertFromLongStrToDecimal(d, 'amount', GRT_conversion_rate)            
+            convertFromLongStrToDecimalPercent(d, 'indexingRewardCut')
+            convertFromLongStrToDecimalPercent(d, 'queryFeeCut')
         except KeyError:
             pass
         # print(len(d))
