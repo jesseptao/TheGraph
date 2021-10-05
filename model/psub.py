@@ -1,5 +1,6 @@
 from .parts.indexer_behaviors import (cumulative_deposited_stake, indexer_actions,
-                                      is_initial_stake_deposited)
+                                      is_initial_stake_deposited, store_query_fee_cut,
+                                      store_indexer_fee_cut)
                                       
 # , deposit_stake, add_shares_to_indexer, add_shares_to_pool)
 
@@ -27,13 +28,20 @@ psubs = [
             'indexer_actions': indexer_actions
         },
         'variables': {
-            # 'pool_delegated_stake': deposit_stake,
-            # 'shares': add_shares_to_pool,
-            # 'delegators': add_shares_to_indexer,
             'cumulative_deposited_stake': cumulative_deposited_stake,
             'initial_stake_deposited': is_initial_stake_deposited
         },
     },
+    {
+        'label': 'Delegation Parameters',
+        'policies': {
+            'indexer_actions': indexer_actions
+        },
+        'variables': {
+            'query_fee_cut': store_query_fee_cut,
+            'indexer_revenue_cut': store_indexer_fee_cut
+        },
+    },    
     {
         'label': 'Revenue Process',
         'policies': {
@@ -41,11 +49,11 @@ psubs = [
         },
         'variables': {
             'GRT': mint_GRT,
-            'delegators': distribute_revenue_to_indexer,
             'pool_delegated_stake': distribute_revenue_to_pool,   
             'cumulative_indexing_revenue': store_indexing_revenue,
             'cumulative_query_revenue': store_query_revenue, 
             'cumulative_non_indexer_revenue': cumulative_non_indexer_revenue,
+            'delegators': distribute_revenue_to_indexer,
         },
     },
     {
@@ -54,9 +62,9 @@ psubs = [
             'delegate_actions': delegate_actions,
         },
         'variables': {
-            'delegators': delegate,
             'pool_delegated_stake': add_delegated_stake_to_pool,
             'GRT': account_for_tax,
+            'delegators': delegate,
         },
     },
     {
@@ -65,8 +73,8 @@ psubs = [
             'undelegate_actions': undelegate_actions
         },
         'variables': {
-            'delegators': undelegate,
             'pool_delegated_stake': subtract_undelegated_stake_from_pool,            
+            'delegators': undelegate,
         },
     },    
     {

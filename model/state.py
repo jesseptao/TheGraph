@@ -26,8 +26,11 @@ genesis_state = {
     # # f: A_del -> A_ind
     # 'delegators': {'indexer': Delegator(id=id_indexer, shares=initial_shares, delegated_tokens=initial_stake)},
 
-    # # I_r: This is the same as delegators['indexer'].holdings.
-    # # 'indexer_revenue': 0,
+    'query_fee_cut': Decimal(0.0),
+    'indexer_revenue_cut': Decimal(0.0),
+
+    # I_r: This is the same as delegators['indexer'].holdings.
+    # 'indexer_revenue': 0,
 
     # # S_i: Same as pool_locked_stake in simplified single-indexer model.
     # # 'indexer_stake': 
