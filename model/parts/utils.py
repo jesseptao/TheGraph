@@ -1,7 +1,8 @@
 import pandas as pd
-from decimal import Decimal
-import sys
+from decimal import *
 
+getcontext().prec = 6
+print(getcontext())
 from pandas.core.accessor import delegate_names
 def convertFromLongStrToDecimal(d, field, GRT_conversion_rate):
     for events in d.values():
@@ -65,10 +66,11 @@ def load_all_events(path,GRT_conversion_rate = -18):
             convertFromLongStrToDecimalPercent(d, 'indexingRewardCut')
             convertFromLongStrToDecimalPercent(d, 'queryFeeCut')
         except KeyError:
+            print('KEYERROR!!!')
             pass
         events_list_of_dicts.append(d)
     print(f'TOTAL NUMBER OF EVENTS: {len(all_events)}')
-    print(f'Set SIMULATION_TIME_STEPS in config.py to {len(all_events)}')
+    print(f'You should set SIMULATION_TIME_STEPS in config.py to a minimum of {len(all_events)} to capture all events.')
     print()
     return events_list_of_dicts
 

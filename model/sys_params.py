@@ -1,6 +1,12 @@
 from .parts import utils
-from decimal import Decimal
+from decimal import *
+print(getcontext())
+getcontext().prec = 6
+print(getcontext())
+
 from sys import platform
+
+
 R_i_rate = [0.03]
 
 indexer_allocation_rate = [0.0050]  # ASSUMED share of GRT minted by subgraph by indexer

@@ -46,7 +46,7 @@ class Delegator(object):
 
 
     def set_undelegated_tokens(self, unbonding_timeblock, undelegated_tokens):
-        self.undelegated_tokens = undelegated_tokens
+        self.undelegated_tokens += undelegated_tokens
         self.locked_until = unbonding_timeblock
    
     def will_act(self):

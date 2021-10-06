@@ -1,6 +1,7 @@
 # from model.parts import delegator
 from .parts.delegator import Delegator
-from decimal import Decimal
+from decimal import *
+getcontext().prec = 6
 
 initial_shares = 0
 initial_stake = Decimal(0)

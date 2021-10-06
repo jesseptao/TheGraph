@@ -1,7 +1,8 @@
 import random
 from model.parts.delegator import Delegator
 from . import utils
-
+from decimal import *
+getcontext().prec = 6
 
 def may_act_this_timestep(params, step, sL, s):
     acting_delegator_ids = []
@@ -79,8 +80,6 @@ def process_delegation_event(delegation, delegators, initial_holdings, delegatio
     # NOTE: allow this for now.
     # if delegation_tokens_quantity >= delegator.holdings:
     #     delegation_tokens_quantity = delegator.holdings        
-    print(type(delegator.holdings))
-    print(type(delegation_tokens_quantity))
     delegator.holdings -= delegation_tokens_quantity
     
     # 5 * (0.995) / 10 * 10 = 4.975
@@ -118,7 +117,7 @@ def account_for_tax(params, step, sL, s, inputs):
     return key, value
 
 def undelegate(params, step, sL, s, inputs):
-    
+    getcontext().prec = 6
     # pool_delegated_stake needs to be updated
     pool_delegated_stake = s['pool_delegated_stake']
     undelegation_events = inputs['undelegation_events'] if inputs['undelegation_events'] is not None else []    
@@ -135,28 +134,33 @@ def undelegate(params, step, sL, s, inputs):
         delegator_id = undelegation['delegator']
 
         delegator = delegators[delegator_id]        
+        
+        undelegation_shares_quantity = undelegation['shares']
         print(f'''ACTION: UNDELEGATE (before)--
             {delegator_id=}, 
             {delegator.holdings=}, 
             {delegator.undelegated_tokens=}, 
-            {delegator.shares=}''')
-        
-        undelegation_shares_quantity = undelegation['shares']
+            {delegator.shares=}
+            {undelegation_shares_quantity=}''')
 
         if undelegation_shares_quantity < 0:
             # require a non-zero amount of shares
+            print(f'WARN: undelegation shares quantity < 0 ({undelegation_shares_quantity})')
             continue
 
         if undelegation_shares_quantity > delegator.shares:
             # require delegator to have enough shares in the pool to undelegate
+            print(f'WARN: undelegation shares quantity > delegator shares held. ({undelegation_shares_quantity=}, {delegator.shares=})')
             undelegation_shares_quantity = delegator.shares
 
         # Withdraw tokens if available
-        withdrawableDelegatedTokens = delegator.getWithdrawableDelegatedTokens(timestep)
-        if withdrawableDelegatedTokens > 0:
-            delegator.withdraw(withdrawableDelegatedTokens)
+        # TODO: make this accurate (28 days not timesteps)
+        # withdrawableDelegatedTokens = delegator.getWithdrawableDelegatedTokens(timestep)
+        # if withdrawableDelegatedTokens > 0:
+        #     print(f'INFO: tokens withdrawn {withdrawableDelegatedTokens=}')
+        #     delegator.withdraw(withdrawableDelegatedTokens)
 
-        undelegated_tokens = undelegation_shares_quantity * pool_delegated_stake / shares
+        undelegated_tokens = undelegation_shares_quantity * (pool_delegated_stake / shares)
         until = undelegation['until']
         delegator.set_undelegated_tokens(until, undelegated_tokens)
         delegator.shares -= undelegation_shares_quantity
@@ -165,8 +169,11 @@ def undelegate(params, step, sL, s, inputs):
         print(f'''  (after)--
                     {delegator_id=}, 
                     {delegator.holdings=}, 
+                    {undelegated_tokens=},
                     {delegator.undelegated_tokens=}, 
-                    {delegator.shares=}''')
+                    {delegator.shares=}
+                    {until=}
+                    {undelegation_shares_quantity=}''')
     key = 'delegators'
     value = s['delegators']
     return key, value
@@ -183,6 +190,12 @@ def withdraw(params, step, sL, s, inputs):
         delegator_id = withdraw['delegator']
         delegator = delegators[delegator_id]        
         tokens = withdraw['tokens']
+        print(f'''ACTION: WITHDRAW (before)--
+                    {delegator_id=}, 
+                    {delegator.holdings=}, 
+                    {delegator.undelegated_tokens=}, 
+                    {delegator.shares=}
+                    {tokens=}''')
         withdrawableDelegatedTokens = delegator.getWithdrawableDelegatedTokens(timestep)
         if withdrawableDelegatedTokens > tokens:
             delegator.withdraw(tokens)
@@ -191,11 +204,13 @@ def withdraw(params, step, sL, s, inputs):
         else:
             pass
 
-        print(f'''ACTION: WITHDRAW--
+        print(f'''ACTION: WITHDRAW (after)--
                     {delegator_id=}, 
                     {delegator.holdings=}, 
                     {delegator.undelegated_tokens=}, 
-                    {delegator.shares=}''')
+                    {delegator.shares=}
+                    {tokens=}
+                    {withdrawableDelegatedTokens=}''')
     key = 'delegators'
     value = s['delegators']
     return key, value
