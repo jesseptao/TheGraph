@@ -1,9 +1,10 @@
 import random
+from indexer import Indexer
 """ A Delegator is an actor who delegates native tokens to the revenue sharing pool
 for shares in the revenue stream. """
 
 
-class Delegator(object):
+class Delegator(Indexer):
     def __init__(self, id, shares=0, holdings=0, discount_rate=.9,
                  minimum_shares=0, delegated_tokens=0):
         # initialize delegator state
