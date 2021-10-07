@@ -1,4 +1,4 @@
-from delegator import Delegator
+from decimal import Decimal
 
 class Indexer():
     def __init__(self, id = '', pool_delegated_stake = 0, shares = 0, pool_locked_stake = 0,
@@ -8,7 +8,7 @@ class Indexer():
         self.id = id
         self.pool_delegated_stake = pool_delegated_stake
         self.shares = shares
-        self.delegators = []
+        self.delegators = {} # key is delegator ID, value is delegator object.
         self.pool_locked_stake = pool_locked_stake
         self.indexer_revenue = indexer_revenue
         self.GRT = GRT
@@ -17,6 +17,10 @@ class Indexer():
         self.cumulative_non_indexer_revenue = cumulative_non_indexer_revenue
         self.cumulative_deposited_stake = cumulative_deposited_stake
         self.initial_stake_deposited = initial_stake_deposited
+        self.query_fee_cut = Decimal(0.0)
+        self.indexer_revenue_cut = Decimal(0.0)       
+        self.initial_stake_deposited = False 
+        self.holdings = 0
 
-    def add_delegator(self, Delegator, indexer_id):
-        self.delegators.append(Delegator(indexer_id))
+    # def add_delegator(self, Delegator, indexer_id):
+    #     self.delegators.append(Delegator(indexer_id))

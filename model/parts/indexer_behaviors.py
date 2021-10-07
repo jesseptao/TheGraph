@@ -1,4 +1,5 @@
 from . import utils
+from .indexer import Indexer
 
 
 """ this just gets all of the events at this timestep into policy variables """
@@ -29,45 +30,51 @@ def indexer_actions(params, step, sL, s):
 #     return key, value
 
 def cumulative_deposited_stake(params, step, sL, s, inputs):    
-    cumulative_deposited_stake = s['cumulative_deposited_stake']
-    stake_deposited_events = inputs['stake_deposited_events'] if inputs['stake_deposited_events'] is not None else []    
-    total_stake_deposited_this_timestep = utils.total_stake_deposited(stake_deposited_events)    
-    
-    if stake_deposited_events:
-        cumulative_deposited_stake += total_stake_deposited_this_timestep
-        print(f'STAKE DEPOSITED: {total_stake_deposited_this_timestep}')
+    key = 'indexers'
+    timestep = s['timestep']
+    print(f'{timestep=} beginning...')
 
-    key = 'cumulative_deposited_stake'
-    value = cumulative_deposited_stake
-    return key, value
+    # stake_deposited_events = inputs['stake_deposited_events'] if inputs['stake_deposited_events'] is not None else []    
+    event = inputs['stake_deposited_events'][0] if inputs['stake_deposited_events'] is not None else None
+    indexers = s['indexers']
 
-def is_initial_stake_deposited(params, step, SL, s, inputs):
-    stake_deposited_events = inputs['stake_deposited_events'] if inputs['stake_deposited_events'] is not None else []    
+    if event:
+        indexer_id = event['indexer']
+        if indexer_id not in indexers:
+            indexers[indexer_id] = Indexer()
+
+        
+        indexer = indexers[indexer_id]
+        indexer.cumulative_deposited_stake += event['tokens']
+        indexer.initial_stake_deposited = True
+        print(f'STAKE DEPOSITED: {event["tokens"]}')
     
-    initial_stake_deposited = s['initial_stake_deposited']
-    
-    if stake_deposited_events:
-        initial_stake_deposited = True
-    
-    key = 'initial_stake_deposited'
-    value = initial_stake_deposited
+    value = indexers
     return key, value
 
 def store_query_fee_cut(params, step, SL, s, inputs):
-    key = 'query_fee_cut'
-    delegation_parameter_events = inputs['delegation_parameter_events'] if inputs['delegation_parameter_events'] is not None else []    
-    value = s[key]
+    key = 'indexers'
+    indexers = s[key]
+
+    delegation_parameter_events = inputs['delegation_parameter_events'] if inputs['delegation_parameter_events'] is not None else []        
     
     for event in delegation_parameter_events:
-        value = event['queryFeeCut']
-        print(f'STORE QUERY FEE CUT={value}')
+        indexer = indexers[event['indexer']]
+        indexer.query_fee_cut = event['queryFeeCut']
+        print(f'STORE QUERY FEE CUT={indexer.query_fee_cut}')
+    
+    value = indexers
     return key, value
     
 def store_indexer_fee_cut(params, step, SL, s, inputs):    
-    key = 'indexer_revenue_cut'    
+    key = 'indexers'    
+    indexers = s[key]
     delegation_parameter_events = inputs['delegation_parameter_events'] if inputs['delegation_parameter_events'] is not None else []    
-    value = s[key]
+    
     for event in delegation_parameter_events:
-        value = event['indexingRewardCut']
-        print(f'STORE INDEXER FEE CUT={value}')
+        indexer = indexers[event['indexer']]
+        indexer.indexing_revenue_cut = event['indexingRewardCut']
+        print(f'STORE INDEXER FEE CUT={indexer.indexing_revenue_cut}')
+    
+    value = indexers
     return key, value

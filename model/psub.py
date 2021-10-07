@@ -1,5 +1,5 @@
 from .parts.indexer_behaviors import (cumulative_deposited_stake, indexer_actions,
-                                      is_initial_stake_deposited, store_query_fee_cut,
+                                      store_query_fee_cut,
                                       store_indexer_fee_cut)
                                       
 # , deposit_stake, add_shares_to_indexer, add_shares_to_pool)
@@ -7,8 +7,7 @@ from .parts.indexer_behaviors import (cumulative_deposited_stake, indexer_action
 from .parts.delegator_behaviors import (delegate, undelegate, withdraw,
                                         delegate_actions,
                                         undelegate_actions,
-                                        withdraw_actions,
-                                        account_for_tax)
+                                        withdraw_actions)
 
 from .parts.revenue import (revenue_amt, distribute_revenue_to_indexer, 
                             mint_GRT, distribute_revenue_to_pool,
@@ -17,7 +16,7 @@ from .parts.revenue import (revenue_amt, distribute_revenue_to_indexer,
 
 # from .parts.private_price import compute_and_store_private_prices
 
-from .parts.delegator_behaviors_bookkeeping import (store_shares, add_delegated_stake_to_pool,
+from .parts.delegator_behaviors_bookkeeping import (store_shares, 
                                                     subtract_undelegated_stake_from_pool)
 
 
@@ -28,43 +27,88 @@ psubs = [
             'indexer_actions': indexer_actions
         },
         'variables': {
-            'cumulative_deposited_stake': cumulative_deposited_stake,
-            'initial_stake_deposited': is_initial_stake_deposited
+            'indexers': cumulative_deposited_stake
         },
     },
     {
-        'label': 'Delegation Parameters',
+        'label': 'Delegation Parameters - Query Fee',
         'policies': {
             'indexer_actions': indexer_actions
         },
         'variables': {
-            'query_fee_cut': store_query_fee_cut,
-            'indexer_revenue_cut': store_indexer_fee_cut
+            'indexers': store_query_fee_cut,
         },
     },    
     {
-        'label': 'Revenue Process',
+        'label': 'Delegation Parameters - Indexer Revenue',
+        'policies': {
+            'indexer_actions': indexer_actions
+        },
+        'variables': {
+            'indexers': store_indexer_fee_cut
+        },
+    },        
+    {
+        'label': 'Revenue Process - Mint',
         'policies': {
             'revenue_amt': revenue_amt, # indexing and query rewards 
         },
         'variables': {
-            'GRT': mint_GRT,
-            'pool_delegated_stake': distribute_revenue_to_pool,   
-            'cumulative_indexing_revenue': store_indexing_revenue,
-            'cumulative_query_revenue': store_query_revenue, 
-            'cumulative_non_indexer_revenue': cumulative_non_indexer_revenue,
-            'delegators': distribute_revenue_to_indexer,
+            'indexers': mint_GRT,
         },
     },
+    {
+        'label': 'Revenue Process - Revenue to Pool',
+        'policies': {
+            'revenue_amt': revenue_amt, # indexing and query rewards 
+        },
+        'variables': {
+            'indexers': distribute_revenue_to_pool,   
+        },
+    },
+    {
+        'label': 'Revenue Process - Indexing Revenue',
+        'policies': {
+            'revenue_amt': revenue_amt, # indexing and query rewards 
+        },
+        'variables': {
+            'indexers': store_indexing_revenue,
+        },
+    },
+    {
+        'label': 'Revenue Process - Query Revenue',
+        'policies': {
+            'revenue_amt': revenue_amt, # indexing and query rewards 
+        },
+        'variables': {
+            'indexers': store_query_revenue, 
+        },
+    },
+    {
+        'label': 'Revenue Process - Non-Indexer Revenue',
+        'policies': {
+            'revenue_amt': revenue_amt, # indexing and query rewards 
+        },
+        'variables': {
+            'indexers': cumulative_non_indexer_revenue,
+        },
+    },
+    {
+        'label': 'Revenue Process - Indexer Revenue',
+        'policies': {
+            'revenue_amt': revenue_amt, # indexing and query rewards 
+        },
+        'variables': {
+            'indexers': distribute_revenue_to_indexer,
+        },
+    },                    
     {
         'label': 'Delegate',
         'policies': {
             'delegate_actions': delegate_actions,
         },
         'variables': {
-            'pool_delegated_stake': add_delegated_stake_to_pool,
-            'GRT': account_for_tax,
-            'delegators': delegate,
+            'indexers': delegate,
         },
     },
     {
@@ -73,8 +117,8 @@ psubs = [
             'undelegate_actions': undelegate_actions
         },
         'variables': {
-            'pool_delegated_stake': subtract_undelegated_stake_from_pool,            
-            'delegators': undelegate,
+            # 'pool_delegated_stake': subtract_undelegated_stake_from_pool,            
+            'indexers': undelegate,
         },
     },    
     {
@@ -83,18 +127,18 @@ psubs = [
             'withdraw_actions': withdraw_actions
         },
         'variables': {
-            'delegators': withdraw,
+            'indexers': withdraw,
         },
     },        
-    {
-        'label': 'Delegator Behaviors Bookkeeping',
-        'policies': {
-            'indexer_actions': indexer_actions
-        },
-        'variables': {
-            # 'pool_delegated_stake': store_pool_delegated_stake,
-            'shares': store_shares,
-        },
-    },
+    # {
+    #     'label': 'Delegator Behaviors Bookkeeping',
+    #     'policies': {
+    #         'indexer_actions': indexer_actions
+    #     },
+    #     'variables': {
+    #         # 'pool_delegated_stake': store_pool_delegated_stake,
+    #         'shares': store_shares,
+    #     },
+    # },
 ]
 

@@ -5,11 +5,12 @@ from decimal import Decimal
 
 initial_shares = 0
 initial_stake = Decimal(0)
-id_indexer = "indexer"
+# id_indexer = "indexer"
 
 """ System state/state of the delegation pool for multiple indexers. """
 genesis_state = {
-    'indexer': {'0x0000000': Indexer(), '0x000001': Indexer()},
+    # 'indexers': {'0x0000000': Indexer(), '0x000001': Indexer()},
+    'indexers': {},
     ## DELEGATION POOL of Indexer State ##
     # A_ind
     #'id_indexer': id_indexer,
@@ -26,8 +27,8 @@ genesis_state = {
     # # f: A_del -> A_ind
     # 'delegators': {'indexer': Delegator(id=id_indexer, shares=initial_shares, delegated_tokens=initial_stake)},
 
-    'query_fee_cut': Decimal(0.0),
-    'indexer_revenue_cut': Decimal(0.0),
+    # 'query_fee_cut': Decimal(0.0),
+    # 'indexer_revenue_cut': Decimal(0.0),
 
     # I_r: This is the same as delegators['indexer'].holdings.
     # 'indexer_revenue': 0,

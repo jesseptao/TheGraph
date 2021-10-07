@@ -14,15 +14,6 @@ def store_shares(params, step, sL, s, inputs):
 
 #     return key, pool_delegated_stake
 
-def add_delegated_stake_to_pool(params, step, sL, s, inputs):
-    key = 'pool_delegated_stake'
-    delegation_events = inputs['delegation_events'] if inputs['delegation_events'] is not None else []    
-    pool_delegated_stake = s['pool_delegated_stake']
-    
-    for delegation in delegation_events:
-        pool_delegated_stake += delegation['tokens']   
-
-    return key, pool_delegated_stake    
 
 def subtract_undelegated_stake_from_pool(params, step, sL, s, inputs):
     key = 'pool_delegated_stake'
