@@ -59,7 +59,7 @@ def delegate(params, step, sL, s, inputs):
         
         # this updates the delegators object.
         # TODO: clean up this method, since it requires fewer parameters now
-        indexer.pool_delegated_stake, shares, delegators = process_delegation_event(event, delegators, initial_holdings, 
+        indexer.pool_delegated_stake, delegators = process_delegation_event(event, delegators, initial_holdings, 
                                             delegation_tax_rate, indexer.pool_delegated_stake, shares)        
 
     key = 'indexers'
@@ -67,13 +67,13 @@ def delegate(params, step, sL, s, inputs):
 
 
 
-def process_delegation_event(delegation, delegators, initial_holdings, delegation_tax_rate, pool_delegated_stake, shares):
-    delegator_id = delegation['delegator']
+def process_delegation_event(event, delegators, initial_holdings, delegation_tax_rate, pool_delegated_stake, shares):
+    delegator_id = event['delegator']
     if delegator_id not in delegators:
         delegators[delegator_id] = Delegator(delegator_id, holdings = initial_holdings)
     
     delegator = delegators[delegator_id]        
-    delegation_tokens_quantity = delegation['tokens']
+    delegation_tokens_quantity = event['tokens']
 
     print(f"""ACTION: DELEGATE (before)--
                 {delegator_id=}, 
@@ -89,15 +89,15 @@ def process_delegation_event(delegation, delegators, initial_holdings, delegatio
     delegator.holdings -= delegation_tokens_quantity
     
     # 5 * (0.995) / 10 * 10 = 4.975
-    # print(f'{pool_delegated_stake=}, {shares=}, {delegation_tax_rate=}, {delegation_tokens_quantity=}')
+    print(f'{pool_delegated_stake=}, {shares=}, {delegation_tax_rate=}, {delegation_tokens_quantity=}')
     new_shares = delegation_tokens_quantity * (1 - delegation_tax_rate) if pool_delegated_stake == 0 \
                  else ((delegation_tokens_quantity * (1 - delegation_tax_rate)) / pool_delegated_stake) * shares
     
     # NOTE: pool_delegated_stake must be updated AFTER new_shares is calculated
     pool_delegated_stake += delegation_tokens_quantity * (1 - delegation_tax_rate)
     delegator.shares += new_shares
+    shares += new_shares
     # store shares locally only--it has to be recomputed each action block because we don't save it until bookkeeping
-    shares += new_shares 
     print(f"""  (after)--
                 {delegator_id=}, 
                 {pool_delegated_stake=},
@@ -105,7 +105,7 @@ def process_delegation_event(delegation, delegators, initial_holdings, delegatio
                 {shares=},                
                 {delegator.holdings=}, 
                 {delegator.shares=}""")
-    return pool_delegated_stake, shares, delegators
+    return pool_delegated_stake, delegators
 
 
 def undelegate(params, step, sL, s, inputs):

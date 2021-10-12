@@ -60,8 +60,13 @@ def store_query_fee_cut(params, step, SL, s, inputs):
     
     for event in delegation_parameter_events:
         indexer = indexers[event['indexer']]
+        print(f'''ACTION: QUERY FEE CUT (before)--
+                {indexer.query_fee_cut=}
+        ''')        
         indexer.query_fee_cut = event['queryFeeCut']
-        print(f'STORE QUERY FEE CUT={indexer.query_fee_cut}')
+        print(f'''ACTION: QUERY FEE CUT (after)--
+                {indexer.query_fee_cut=}
+        ''')
     
     value = indexers
     return key, value
@@ -73,8 +78,14 @@ def store_indexer_fee_cut(params, step, SL, s, inputs):
     
     for event in delegation_parameter_events:
         indexer = indexers[event['indexer']]
-        indexer.indexing_revenue_cut = event['indexingRewardCut']
-        print(f'STORE INDEXER FEE CUT={indexer.indexing_revenue_cut}')
-    
+        
+        print(f'''ACTION: INDEXING REWARD CUT (before)--
+                {indexer.indexer_revenue_cut=}
+        ''')        
+        indexer.indexer_revenue_cut = event['indexingRewardCut']
+        print(f'''ACTION: INDEXING REWARD CUT (after)--
+                {indexer.indexer_revenue_cut=}
+        ''')
+
     value = indexers
     return key, value

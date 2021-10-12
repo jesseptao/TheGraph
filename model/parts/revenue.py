@@ -72,16 +72,15 @@ def distribute_revenue_to_pool(params, step, sL, s, inputs):
         print(f'ACTION: DISTRIBUTE REVENUE TO POOL')
 
         indexer = s['indexers'][indexer_id]
-        pool_delegated_stake = indexer.pool_delegated_stake
         query_fee_cut = indexer.query_fee_cut
         indexing_revenue_cut = indexer.indexer_revenue_cut
 
         # 5.2 D+ = D + Ri * (1 - phi)
         non_indexer_revenue = calculate_revenue_to_indexer_pool(indexing_revenue, query_revenue, query_fee_cut, indexing_revenue_cut)
 
-        print(f'  {indexing_revenue=}, {query_revenue=}, {pool_delegated_stake=} (before)')
-        pool_delegated_stake += non_indexer_revenue
-        print(f'  {indexing_revenue=}, {query_revenue=}, {pool_delegated_stake=} (after)')
+        print(f'  {indexing_revenue=}, {query_revenue=}, {indexer.pool_delegated_stake=} (before)')
+        indexer.pool_delegated_stake += non_indexer_revenue
+        print(f'  {indexing_revenue=}, {query_revenue=}, {indexer.pool_delegated_stake=} (after)')
     key = 'indexers'
     return key, indexers
 

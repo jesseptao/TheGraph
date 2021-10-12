@@ -17,8 +17,12 @@ class Indexer():
         self.cumulative_non_indexer_revenue = cumulative_non_indexer_revenue
         self.cumulative_deposited_stake = cumulative_deposited_stake
         self.initial_stake_deposited = initial_stake_deposited
-        self.query_fee_cut = Decimal(0.0)
-        self.indexer_revenue_cut = Decimal(0.0)       
+        
+        # query_fee_cut must be initialized by an event
+        self.query_fee_cut = None
+        
+        # indexer_revenue_cut must be initialized by an event
+        self.indexer_revenue_cut = None
         self.initial_stake_deposited = False 
         self.holdings = 0
 
