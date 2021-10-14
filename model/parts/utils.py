@@ -38,7 +38,7 @@ def load_all_events(path,GRT_conversion_rate = -18):
     # reset index
     # break back out to distinct types
     # use block number, resolve conflicts with log index.
-    all_events = pd.read_csv(f'{path}/singleIndexer.csv')
+    all_events = pd.read_csv(f'{path}')
     all_events.reset_index(inplace=True)
     all_events = all_events.rename(columns={'index': 'timestep'})
     all_events.set_index('timestep', inplace=True, drop=False)

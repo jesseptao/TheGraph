@@ -41,9 +41,7 @@ def cumulative_deposited_stake(params, step, sL, s, inputs):
     if event:
         indexer_id = event['indexer']
         if indexer_id not in indexers:
-            indexers[indexer_id] = Indexer()
-
-        
+            indexers[indexer_id] = Indexer(indexer_id)        
         indexer = indexers[indexer_id]
         indexer.cumulative_deposited_stake += event['tokens']
         indexer.initial_stake_deposited = True
@@ -59,7 +57,11 @@ def store_query_fee_cut(params, step, SL, s, inputs):
     delegation_parameter_events = inputs['delegation_parameter_events'] if inputs['delegation_parameter_events'] is not None else []        
     
     for event in delegation_parameter_events:
-        indexer = indexers[event['indexer']]
+        indexer_id = event['indexer']
+        if indexer_id not in indexers:
+            indexers[indexer_id] = Indexer(indexer_id)        
+        indexer = indexers[indexer_id]
+
         print(f'''ACTION: QUERY FEE CUT (before)--
                 {indexer.query_fee_cut=}
         ''')        
