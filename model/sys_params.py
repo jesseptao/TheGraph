@@ -29,8 +29,8 @@ delegator_initial_holdings = [Decimal(10e9)]
 # indexer_revenue_cut = [Decimal(0.8)]
 
 # event_path = 'GraphQL_data'
-event_path = 'another_indexer/single_indexer/singleIndexer.csv'
-# event_path = 'multiple_indexer/multipleIndexer.csv'
+# event_path = 'another_indexer/single_indexer/singleIndexer.csv'
+event_path = 'multiple_indexer/multipleIndexer.csv'
 
 delegation_events, undelegation_events, withdraw_events, indexing_fee_events, \
         query_fee_events, stake_deposited_events, rewards_assigned_events, \
