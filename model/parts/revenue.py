@@ -46,7 +46,7 @@ def distribute_revenue_to_indexer(params, step, sL, s, inputs):
         query_fee_cut = indexer.query_fee_cut
         indexing_revenue_cut = indexer.indexer_revenue_cut
 
-        print(f'ACTION: DISTRIBUTE REVENUE TO INDEXER')
+        print(f'EVENT: DISTRIBUTE REVENUE TO INDEXER')
         
         # take indexer cut here, the rest goes to indexer pool
         revenue_to_indexer = (indexing_revenue + 
@@ -69,7 +69,7 @@ def distribute_revenue_to_pool(params, step, sL, s, inputs):
     
     indexers = s['indexers']
     if indexing_revenue != 0 or query_revenue != 0:
-        print(f'ACTION: DISTRIBUTE REVENUE TO POOL')
+        print(f'EVENT: DISTRIBUTE REVENUE TO POOL')
 
         indexer = s['indexers'][indexer_id]
         query_fee_cut = indexer.query_fee_cut

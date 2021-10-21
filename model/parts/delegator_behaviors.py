@@ -35,7 +35,7 @@ def delegate(params, step, sL, s, inputs):
     event = inputs['delegation_events'][0] if inputs['delegation_events'] is not None else None    
     if event:
         indexer = s['indexers'][event['indexer']]
-        
+        # print("DELEGATE EVENT", event)
         # # Step 1: Account for Tax
         # # sum up the number of tokens delegated this timestep        
         
@@ -55,33 +55,46 @@ def delegate(params, step, sL, s, inputs):
         delegation_tax_rate = params['delegation_tax_rate']        
         initial_holdings = params['delegator_initial_holdings']
         delegators = indexer.delegators
-        # print(f'act: {acting_delegator_ids=}')
+
+        delegator_id = event['delegator']
+        if delegator_id not in delegators:
+            delegators[delegator_id] = Delegator(delegator_id, holdings = initial_holdings)
         
-        # this updates the delegators object.
-        # TODO: clean up this method, since it requires fewer parameters now
-        indexer.pool_delegated_stake, delegators = process_delegation_event(event, delegators, initial_holdings, 
+        delegator = delegators[delegator_id]        
+        delegation_tokens_quantity = event['tokens']
+
+        
+        print(f"""EVENT: DELEGATE (before)--
+                    {indexer.id=},
+                    {delegator_id=}, 
+                    {indexer.pool_delegated_stake=},
+                    {delegation_tokens_quantity=},
+                    {shares=},
+                    {delegator.holdings=}, 
+                    {delegator.shares=}""")
+
+        indexer.pool_delegated_stake = process_delegation_event(delegation_tokens_quantity, delegator, initial_holdings, 
                                             delegation_tax_rate, indexer.pool_delegated_stake, shares)        
+
+        print(f"""  (after)--
+                    {indexer.id=},
+                    {delegator.id=}, 
+                    {indexer.pool_delegated_stake=},
+                    {delegation_tokens_quantity=},
+                    {shares=},                
+                    {delegator.holdings=}, 
+                    {delegator.shares=}""")
+
 
     key = 'indexers'
     return key, s['indexers']
 
 
 
-def process_delegation_event(event, delegators, initial_holdings, delegation_tax_rate, pool_delegated_stake, shares):
-    delegator_id = event['delegator']
-    if delegator_id not in delegators:
-        delegators[delegator_id] = Delegator(delegator_id, holdings = initial_holdings)
-    
-    delegator = delegators[delegator_id]        
-    delegation_tokens_quantity = event['tokens']
+def process_delegation_event(delegation_tokens_quantity, delegator, initial_holdings, delegation_tax_rate, pool_delegated_stake, shares):
 
-    print(f"""ACTION: DELEGATE (before)--
-                {delegator_id=}, 
-                {pool_delegated_stake=},
-                {delegation_tokens_quantity=},
-                {shares=},
-                {delegator.holdings=}, 
-                {delegator.shares=}""")
+
+
 
     # NOTE: allow this for now.
     # if delegation_tokens_quantity >= delegator.holdings:
@@ -98,14 +111,7 @@ def process_delegation_event(event, delegators, initial_holdings, delegation_tax
     delegator.shares += new_shares
     shares += new_shares
     # store shares locally only--it has to be recomputed each action block because we don't save it until bookkeeping
-    print(f"""  (after)--
-                {delegator_id=}, 
-                {pool_delegated_stake=},
-                {delegation_tokens_quantity=},
-                {shares=},                
-                {delegator.holdings=}, 
-                {delegator.shares=}""")
-    return pool_delegated_stake, delegators
+    return pool_delegated_stake
 
 
 def undelegate(params, step, sL, s, inputs):
@@ -122,7 +128,7 @@ def undelegate(params, step, sL, s, inputs):
         delegator_id = event['delegator']
         delegator = indexer.delegators[delegator_id]                
         undelegation_shares_quantity = event['shares']
-        print(f'''ACTION: UNDELEGATE (before)--
+        print(f'''EVENT: UNDELEGATE (before)--
             {delegator_id=}, 
             {delegator.holdings=}, 
             {delegator.undelegated_tokens=}, 
@@ -174,7 +180,7 @@ def withdraw(params, step, sL, s, inputs):
         delegator_id = event['delegator']
         delegator = indexer.delegators[delegator_id]        
         tokens = event['tokens']
-        print(f'''ACTION: WITHDRAW (before)--
+        print(f'''EVENT: WITHDRAW (before)--
                     {delegator_id=}, 
                     {delegator.holdings=}, 
                     {delegator.undelegated_tokens=}, 
@@ -188,7 +194,7 @@ def withdraw(params, step, sL, s, inputs):
         else:
             pass
 
-        print(f'''ACTION: WITHDRAW (after)--
+        print(f'''EVENT: WITHDRAW (after)--
                     {delegator_id=}, 
                     {delegator.holdings=}, 
                     {delegator.undelegated_tokens=}, 

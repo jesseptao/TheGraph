@@ -1,11 +1,6 @@
 from .parts import utils
 from decimal import *
-print(getcontext())
-getcontext().prec = 6
-print(getcontext())
-
 from sys import platform
-
 
 R_i_rate = [0.03]
 
@@ -28,13 +23,18 @@ delegator_initial_holdings = [Decimal(10e9)]
 # query_fee_cut = [Decimal(0.8)]
 # indexer_revenue_cut = [Decimal(0.8)]
 
-# event_path = 'GraphQL_data'
 # event_path = 'another_indexer/single_indexer/singleIndexer.csv'
-event_path = 'multiple_indexer/multipleIndexer.csv'
+
+# 2 indexers
+# event_path = 'multiple_indexer/multipleIndexer.csv'
+
+# event_path = 'multiple_indexer/3indexer/3indexer.csv'
+event_path = 'multiple_indexer/allindexer/allEvents.csv'
 
 delegation_events, undelegation_events, withdraw_events, indexing_fee_events, \
         query_fee_events, stake_deposited_events, rewards_assigned_events, \
-        delegation_parameter_events = utils.load_all_events(event_path)
+        delegation_parameter_events, \
+        allocation_createds_events = utils.load_all_events(event_path)
 # print(delegation_events)
 params = {
         "r_del": [10],        #	Indexer’s initial delegated stake

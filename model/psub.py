@@ -1,9 +1,6 @@
-from .parts.indexer_behaviors import (cumulative_deposited_stake, indexer_actions,
-                                      store_query_fee_cut,
-                                      store_indexer_fee_cut)
+from .parts.indexer_behaviors import (cumulative_deposited_stake, get_delegation_parameter_events,
+                                      get_stake_deposited_events, store_delegation_parameters)
                                       
-# , deposit_stake, add_shares_to_indexer, add_shares_to_pool)
-
 from .parts.delegator_behaviors import (delegate, undelegate, withdraw,
                                         delegate_actions,
                                         undelegate_actions,
@@ -14,40 +11,32 @@ from .parts.revenue import (revenue_amt, distribute_revenue_to_indexer,
                             store_indexing_revenue, store_query_revenue,
                             cumulative_non_indexer_revenue)
 
-# from .parts.private_price import compute_and_store_private_prices
-
-from .parts.delegator_behaviors_bookkeeping import (store_shares, 
-                                                    subtract_undelegated_stake_from_pool)
-
-
 psubs = [
     {
-        'label': 'Stake Deposit',
+        'label': 'Initialization',
         'policies': {
-            'indexer_actions': indexer_actions
+        },
+        'variables': {
+        },
+    },
+    {
+        'label': 'stakeDepositeds',
+        'policies': {
+            'stake_deposited_events': get_stake_deposited_events
         },
         'variables': {
             'indexers': cumulative_deposited_stake
         },
     },
     {
-        'label': 'Delegation Parameters - Query Fee',
+        'label': 'delegationParametersUpdateds',
         'policies': {
-            'indexer_actions': indexer_actions
+            'delegation_parameters_updated_events': get_delegation_parameter_events
         },
         'variables': {
-            'indexers': store_query_fee_cut,
+            'indexers': store_delegation_parameters,
         },
     },    
-    {
-        'label': 'Delegation Parameters - Indexer Revenue',
-        'policies': {
-            'indexer_actions': indexer_actions
-        },
-        'variables': {
-            'indexers': store_indexer_fee_cut
-        },
-    },        
     {
         'label': 'Revenue Process - Mint',
         'policies': {
@@ -130,15 +119,5 @@ psubs = [
             'indexers': withdraw,
         },
     },        
-    # {
-    #     'label': 'Delegator Behaviors Bookkeeping',
-    #     'policies': {
-    #         'indexer_actions': indexer_actions
-    #     },
-    #     'variables': {
-    #         # 'pool_delegated_stake': store_pool_delegated_stake,
-    #         'shares': store_shares,
-    #     },
-    # },
 ]
 

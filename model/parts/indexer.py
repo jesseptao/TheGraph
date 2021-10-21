@@ -1,7 +1,7 @@
 from decimal import Decimal
 
 class Indexer():
-    def __init__(self, id = '', pool_delegated_stake = 0, shares = 0, pool_locked_stake = 0,
+    def __init__(self, id, pool_delegated_stake = 0, shares = 0, pool_locked_stake = 0,
                 indexer_revenue = 0, GRT = 0, cumulative_indexing_revenue = 0, 
                 cumulative_query_revenue = 0, cumulative_non_indexer_revenue = 0,
                 cumulative_deposited_stake = 0, initial_stake_deposited = False):
