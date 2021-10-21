@@ -58,7 +58,7 @@ def load_all_events(path,GRT_conversion_rate = -18):
     # create a dict from the df where duplicate timesteps appear in a list of dicts under the same timestep index. 
     # NOTE: there should be no duplicates anymore.
     event_types = ['stakeDelegateds', 'stakeDelegatedLockeds', 'stakeDelegatedWithdrawns', 'allocationCloseds', 
-                   'allocationCollecteds', 'stakeDepositeds', 'rewardsAssigneds', 'delegationParametersUpdateds'
+                   'allocationCollecteds', 'stakeDepositeds', 'rewardsAssigneds', 'delegationParametersUpdateds',
                    'allocationCreateds']
     events_list_of_dicts = []
     for event_type in event_types:

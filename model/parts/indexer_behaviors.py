@@ -42,7 +42,6 @@ def get_delegation_parameter_events(params, step, sL, s):
 
 def cumulative_deposited_stake(params, step, sL, s, inputs):    
     key = 'indexers'
-    timestep = s['timestep']    
 
     event = inputs['stake_deposited_events'][0] if inputs['stake_deposited_events'] is not None else None
     indexers = s['indexers']
