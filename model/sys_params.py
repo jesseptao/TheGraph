@@ -28,8 +28,8 @@ delegator_initial_holdings = [Decimal(10e9)]
 # 2 indexers
 # event_path = 'multiple_indexer/multipleIndexer.csv'
 
-# event_path = 'multiple_indexer/3indexer/3indexer.csv'
-event_path = 'multiple_indexer/allindexer/allEvents.csv'
+event_path = 'multiple_indexer/3indexer/3indexer.csv'
+# event_path = 'multiple_indexer/allindexer/allEvents.csv'
 
 delegation_events, undelegation_events, withdraw_events, indexing_fee_events, \
         query_fee_events, stake_deposited_events, rewards_assigned_events, \
